@@ -24,15 +24,12 @@ import { saveAuthInfo } from "../../backend/AuthStorage";
 import { connect } from "react-redux";
 import * as actions from "../../redux/actions/AuthActions";
 
-const { width } = Dimensions.get("screen");
-
 function App(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const checklogin = async () => {
     if (email != "" && password != "") {
-      console.log(email + password)
       const authData = {
         username: email,
         password,
@@ -47,10 +44,10 @@ function App(props) {
             //success
             const data = await response.json();
 
-            //const userInfo = await getData("/auth/user-info/" + data._id);
+            const userInfo = await getData("/auth/user-info/" + data._id);
 
             //saving auth information (id and token)
-            //await saveAuthInfo({ ...data, role: userInfo.role });
+            await saveAuthInfo({ ...data, role: userInfo.role });
             props.setAuth(data);
           } else {
             //fail

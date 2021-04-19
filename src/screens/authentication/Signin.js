@@ -32,15 +32,17 @@ function App(props) {
 
   const checklogin = async () => {
     if (email != "" && password != "") {
+      console.log(email + password)
       const authData = {
-        email,
+        username: email,
         password,
       };
 
       //attempt login
       const response = await postData("/auth/signin/", authData);
       try {
-        if (response) {
+        if (response.status) {
+          //console.log(response)
           if (response.status >= 200 && response.status <= 300) {
             //success
             const data = await response.json();

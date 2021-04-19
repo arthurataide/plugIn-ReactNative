@@ -53,9 +53,10 @@ function App(props) {
     try {
       if (picture.base64string) {
         const promise = uploadImage(picture.base64string);
-        promise.then((data) => {console.log(data)
+        promise.then((data) => {
+          console.log(data);
           postUser(data);
-        })
+        });
       } else {
         await postUser();
       }
@@ -68,7 +69,7 @@ function App(props) {
     var pictures = [];
     //const oldPictures = dataImages;
     //console.log("PostUser----");
-   //console.log(uploadedImage);
+    //console.log(uploadedImage);
 
     if (picture.base64string) {
       if (uploadedImage != undefined && uploadedImage.status === 200) {
@@ -151,11 +152,13 @@ function App(props) {
           //success
           const data = await response.json();
 
-          const userInfo = await getData("/auth/user-info/" + data._id);
-
+          const userInfo = getData("/auth/user-info/" + data._id);
+          userInfo.then((dataInfo) => {
+            props.setAuth(dataInfo);
+          });
           //saving auth information (id and token)
           await saveAuthInfo({ ...data, role: userInfo.role });
-          props.setAuth(data);
+
           setLoading(false);
         } else {
           //fail

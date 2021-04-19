@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { BarIndicator } from "react-native-indicators";
 import { getAuthInfo } from "../../backend/AuthStorage";
+import { getData } from "../../backend/FetchData";
 import theme from "../../theme";
 
 //Redux
@@ -15,7 +16,11 @@ function App(props) {
     res.then((data) => {
       console.log(data);
       if (data) {
-        props.setAuth(data);
+        const userInfo = getData("/auth/user-info/" + data._id);
+        userInfo.then((data) => {
+            props.setAuth(data);
+        })
+        
       } else {
         props.navigation.navigate("Signin");
       }

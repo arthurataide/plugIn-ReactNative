@@ -6,7 +6,7 @@ import auth from './reducers/AuthenticationState'
 
 const reducers = combineReducers({
     //authentication
-    checkAuth: auth
+    authentication: auth
 })
 
 const store = createStore(

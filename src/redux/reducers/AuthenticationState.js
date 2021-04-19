@@ -1,9 +1,11 @@
-import { USER_AUTH } from '../Constants';
+import { SET_USER_AUTH, GET_USER_AUTH , CLEAR_USER_AUTH} from '../Constants';
 
-const authenticationState = (state = false, action) => {
+const authenticationState = (state = [], action) => {
     switch (action.type) {
-        case USER_AUTH : 
-            return action.payload
+        case SET_USER_AUTH : 
+            return [...state, action.payload]
+        case CLEAR_USER_AUTH : 
+            return state = []
     }
     return state
 }

@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
-  ActivityIndicator,
   Text,
   Image,
   View,
@@ -10,35 +9,28 @@ import {
   TouchableOpacity,
   Platform,
   KeyboardAvoidingView,
-  Dimensions,
 } from "react-native";
-import {
-  BallIndicator,
-  BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator,
-} from "react-native-indicators";
+import { BarIndicator } from "react-native-indicators";
 import * as Toast from "../../components/Toast";
-import { SearchBar } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import Input from "../../components/Input";
+import GroupInput from "../../components/GroupInput";
 import theme from "../../theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import { FlatList } from "react-native-gesture-handler";
+import { updateData, postData } from "../../backend/FetchData";
 
-export default function App({ route, navigation }) {
-  let { info } = route.params;
+//Redux
+import { connect } from "react-redux";
+import * as actions from "../../redux/actions/AuthActions";
+
+function App(props) {
+  let { info } = props.route.params;
 
   const [loading, setLoading] = useState(false);
 
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
-  const [picture, setPicture] = useState();
+  const [picture, setPicture] = useState({});
 
   const [skills, setSkills] = useState([]);
   const [skillString, setSkillString] = useState("");
@@ -46,65 +38,151 @@ export default function App({ route, navigation }) {
   const [genres, setGenres] = useState([]);
   const [genreString, setGenreString] = useState("");
 
-  const [flatListRef, setFlatListRef] = useState();
+  const [instruments, setInstruments] = useState([]);
+  const [instrumentString, setInstrumentString] = useState("");
 
-  const save = () => {
-    setLoading(true);
-    setTimeout(function () {
+  useEffect(() => {
+    setPicture({
+      url:
+        "https://ui-avatars.com/api/?size=256&background=fff&color=f5b333&name=Plug IN",
+    });
+  }, []);
+
+  const save = async () => {
+    try {
+      if (picture.base64string) {
+        const promises = uploadImage([picture].base64string);
+        const resultUploadImage = await Promise.all(promises);
+        await postUser(resultUploadImage);
+      } else {
+        await postUser();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
-    }, 7000);
-  };
-
-  const addSkill = () => {
-    console.log("addSkill");
-    if (skillString != "") {
-      let index = skills.length != 0 ? skills[skills.length - 1].id + 1 : 0;
-      console.log(index);
-      let tmpArray = skills.filter((x) => x);
-      tmpArray.push({ id: index, name: skillString });
-      setSkills(tmpArray);
-      console.log(skills);
-      setSkillString("");
     }
   };
 
-  const deleteSkill = (id) => {
-    console.log(id);
-    let array = [];
-    if (skills.length > 1) {
-      array = skills.filter((x) => x.id != id);
-      setSkills(array);
-      console.log("Item: " + skills.length);
-      console.log(skills);
-    } else if (skills.length == 1) {
-      console.log("skill 1");
-      setSkills([]);
+  const postUser = async (uploadedImage) => {
+    var pictures;
+    //const oldPictures = dataImages;
+    console.log('PostUser----')
+    pictures = picture;
+    if (uploadedImage != undefined && uploadImage.status === 200) {
+      pictures = {
+        name: uploadImage.data.id,
+        url: uploadImage.data.url,
+      };
     }
-  };
-  const addGenre = () => {
-    console.log("addGenre");
-    if (genreString != "") {
-      let index = genres.length != 0 ? genres[genres.length - 1].id + 1 : 0;
-      console.log(index);
-      let tmpArray = genres.filter((x) => x);
-      tmpArray.push({ id: index, name: genreString });
-      setGenres(tmpArray);
-      console.log(genres);
-      setGenreString("");
+    //console.log("pictures")
+    console.log(pictures)
+
+    const newUser = {
+      username: info.username,
+      name: info.fname,
+      address: "",
+      title: title,
+      skills: skills,
+      instruments: instruments,
+      genres: genres,
+      about: about,
+      pictureUrl: pictures.url,
+      status: "active",
+    };
+    console.log(newUser)
+    try {
+      const response = await updateData("/auth/user-info/", newUser);
+      if (response) {
+        //Error
+        if (response.status >= 400) {
+          response.text().then((text) => {Toast.showError(text); console.log(text)});
+          return;
+        }
+        if (response.status === 200) {
+          signIn(info.username, info.password);
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const deleteGenre = (id) => {
-    console.log(id);
-    let array = [];
-    if (genres.length > 1) {
-      array = genres.filter((x) => x.id != id);
-      setGenres(array);
-      console.log("Item: " + genres.length);
-      console.log(genres);
-    } else if (genres.length == 1) {
-      console.log("skill 1");
-      setGenres([]);
+  const register = async () => {
+    setLoading(true)
+    const newUser = {
+      username: info.username,
+      password: info.password,
+      role: info.role,
+    };
+    try {
+      const response = await postData("/auth/register", newUser);
+      if (response) {
+        //Error
+        if (response.status >= 400) {
+          response.text().then((text) => Toast.showError(text));
+          props.navigation.navigation("SignIn")
+        } else {
+          save();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const signIn = async (username, pass) => {
+    const authData = {
+      username,
+      password: pass,
+    };
+    const response = await postData("/auth/signin/", authData);
+    try {
+      if (response) {
+        if (response.status >= 200 && response.status <= 300) {
+          //success
+          const data = await response.json();
+
+          //const userInfo = await getData("/auth/user-info/" + data._id);
+
+          //saving auth information (id and token)
+          //await saveAuthInfo({ ...data, role: userInfo.role });
+          props.setAuth(data);
+          setLoading(false);
+        } else {
+          //fail
+          response.text().then((text) => Toast.showError(text));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // Image Manipulation
+  const uploadImage = async (base64String) => {
+    try {
+      var tmpImage = {
+        folder: "User",
+        base64string: base64String,
+      };
+      const response = await postData("/storage/", tmpImage);
+      if (response) {
+        if (response.status == 200) {
+          const data = await response.json();
+          return {
+            status: response.status,
+            data,
+          };
+        } else {
+          const text = await response.text();
+          return {
+            status: response.status,
+            data: text,
+          };
+        }
+      }
+    } catch (error) {
+      //console.error("ERROR ", error)
     }
   };
 
@@ -126,42 +204,76 @@ export default function App({ route, navigation }) {
     }
   };
 
-  const renderSkill = (item) => {
-    return (
-      <View
-        style={{
-          padding: 3,
-          borderWidth: 1,
-          borderRadius: 5,
-          borderColor: theme.COLORS.LIGHTGRAY,
-          flexDirection: "row",
-          marginVertical: 5,
-          marginHorizontal: 3,
-        }}
-      >
-        <Text style={{ fontSize: 14 }}>{item.name}</Text>
-        <TouchableOpacity onPress={() => deleteSkill(item.id)}>
-          <Ionicons name={"close"} size={16} />
-        </TouchableOpacity>
-      </View>
-    );
+  const addFunc = (type) => {
+    switch (type) {
+      case "Genre": {
+        if (genreString != "") {
+          let index = genres.length != 0 ? genres[genres.length - 1].id + 1 : 0;
+          let tmpArray = genres.filter((x) => x);
+          tmpArray.push({ id: index, name: genreString });
+          setGenres(tmpArray);
+          setGenreString("");
+        }
+      }
+      case "Instruments": {
+        if (instrumentString != "") {
+          let index =
+            instruments.length != 0
+              ? instruments[instruments.length - 1].id + 1
+              : 0;
+          let tmpArray = instruments.filter((x) => x);
+          tmpArray.push({ id: index, name: instrumentString });
+          setInstruments(tmpArray);
+          setInstrumentString("");
+        }
+      }
+      case "Skills": {
+        if (skillString != "") {
+          let index = skills.length != 0 ? skills[skills.length - 1].id + 1 : 0;
+          let tmpArray = skills.filter((x) => x);
+          tmpArray.push({ id: index, name: skillString });
+          setSkills(tmpArray);
+          setSkillString("");
+        }
+      }
+    }
   };
 
-  const renderGenre = (item) => {
+  const deleteFunc = (id, type) => {
+    let array = [];
+    switch (type) {
+      case "Genre": {
+        if (genres.length > 1) {
+          array = genres.filter((x) => x.id != id);
+          setGenres(array);
+        } else if (genres.length == 1) {
+          setGenres([]);
+        }
+      }
+      case "Instruments": {
+        if (instruments.length > 1) {
+          array = instruments.filter((x) => x.id != id);
+          setInstruments(array);
+        } else if (instruments.length == 1) {
+          setInstruments([]);
+        }
+      }
+      case "Skills": {
+        if (skills.length > 1) {
+          array = skills.filter((x) => x.id != id);
+          setSkills(array);
+        } else if (skills.length == 1) {
+          setSkills([]);
+        }
+      }
+    }
+  };
+
+  const renderItem = (item, type) => {
     return (
-      <View
-        style={{
-          padding: 3,
-          borderWidth: 1,
-          borderRadius: 5,
-          borderColor: theme.COLORS.LIGHTGRAY,
-          flexDirection: "row",
-          marginVertical: 5,
-          marginHorizontal: 3,
-        }}
-      >
+      <View style={styles.itemViewContainer}>
         <Text style={{ fontSize: 14 }}>{item.name}</Text>
-        <TouchableOpacity onPress={() => deleteGenre(item.id)}>
+        <TouchableOpacity onPress={() => deleteFunc(item.id, type)}>
           <Ionicons name={"close"} size={16} />
         </TouchableOpacity>
       </View>
@@ -171,195 +283,129 @@ export default function App({ route, navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
+    
       {loading ? (
         <View
-          style={{ alignSelf: 'center' ,alignContent: "center", alignItems: 'center', height: 180 }}
+          style={{
+            alignSelf: "center",
+            alignContent: "center",
+            alignItems: "center",
+            height: 180,
+          }}
         >
           <Image
             style={{ height: 100, width: 100 }}
             source={require("../../../assets/headPhoneWhite.png")}
           />
-          <BarIndicator
-            size={50}
-            color={theme.COLORS.WHITE}
-            count={7}
-          />
+          <BarIndicator size={50} color={theme.COLORS.WHITE} count={7} />
         </View>
       ) : (
         <>
-          <KeyboardAvoidingView
-            enabled
-            behavior={Platform.OS === "ios" ? "position" : null}
-          >
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.titleContainer}>
-                <View style={styles.img}>
-                  <Image
-                    style={{ width: 160, height: 160, borderRadius: 80 }}
-                    source={{
-                      uri: picture
-                        ? picture.url
-                        : "https://ui-avatars.com/api/?size=256&background=fff&color=f5b333&name=Plug IN",
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <KeyboardAvoidingView
+              enabled
+              behavior={Platform.OS === "ios" ? "position" : null}
+            >
+              <View>
+                <View style={styles.titleContainer}>
+                  <View style={styles.img}>
+                    <Image
+                      style={{ width: 160, height: 160, borderRadius: 80 }}
+                      source={{
+                        uri: picture.url,
+                      }}
+                    />
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      paddingHorizontal: 68,
+                      marginTop: 10,
+                      alignSelf: "center",
                     }}
+                    onPress={pickImage}
+                  >
+                    <Ionicons name={"camera"} size={30} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.mainContainer}>
+                  {info.role != "fan" ? (
+                    <>
+                      <Input
+                        icon="person-add"
+                        placeholder={
+                          info.role == "musician"
+                            ? "Artistic Name"
+                            : "Band Name"
+                        }
+                        textContentType="name"
+                        containerStyle={styles.inputContainer}
+                        value={title}
+                        onChangeText={(text) => setTitle(text)}
+                      />
+
+                      <GroupInput
+                        icon="musical-notes"
+                        placeholder="Add Genre..."
+                        data={genres}
+                        searchBarText={genreString}
+                        onChangeText={(text) => setGenreString(text)}
+                        renderItem={({ item }) => renderItem(item, "Genre")}
+                        onSubmitEditing={() => addFunc("Genre")}
+                      />
+
+                      {info.role == "musician" ? (
+                        <>
+                          <GroupInput
+                            iconFontAwesome5="guitar"
+                            placeholder="Add Instrument..."
+                            data={instruments}
+                            searchBarText={instrumentString}
+                            onChangeText={(text) => setInstrumentString(text)}
+                            renderItem={({ item }) =>
+                              renderItem(item, "Instruments")
+                            }
+                            onSubmitEditing={() => addFunc("Instruments")}
+                          />
+                          <GroupInput
+                            icon="construct"
+                            placeholder="Add Skill..."
+                            data={skills}
+                            searchBarText={skillString}
+                            onChangeText={(text) => setSkillString(text)}
+                            renderItem={({ item }) =>
+                              renderItem(item, "Skills")
+                            }
+                            onSubmitEditing={() => addFunc("Skills")}
+                          />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
+                  <Input
+                    icon="document-text"
+                    placeholder="Tell more about you..."
+                    containerStyle={[styles.inputContainer, {}]}
+                    multiline={true}
+                    textInputStyle={{
+                      height: 120,
+                      textAlignVertical: "top",
+                    }}
+                    value={about}
+                    onChangeText={(text) => setAbout(text)}
                   />
                 </View>
-                <TouchableOpacity
-                  style={{
-                    paddingHorizontal: 68,
-                    marginTop: 10,
-                    alignSelf: "center",
-                  }}
-                  onPress={pickImage}
-                >
-                  <Ionicons name={"camera"} size={30} />
-                </TouchableOpacity>
               </View>
-              <View style={styles.mainContainer}>
-                {info.role != "fan" ? (
-                  <>
-                    <Input
-                      icon="person-add"
-                      placeholder={
-                        info.role == "musician" ? "Artistic Name" : "Band Name"
-                      }
-                      textContentType="name"
-                      containerStyle={styles.inputContainer}
-                      value={title}
-                      onChangeText={(text) => setTitle(text)}
-                    />
-                    <View
-                      style={{
-                        borderWidth: 1,
-                        borderColor: theme.COLORS.LIGHTGRAY,
-                        borderRadius: 5,
-                        padding: 3,
-                      }}
-                    >
-                      <FlatList
-                        ref={(ref) => setFlatListRef(ref)}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        onContentSizeChange={() =>
-                          flatListRef.scrollToEnd({ animated: true })
-                        }
-                        onLayout={() =>
-                          flatListRef.scrollToEnd({ animated: true })
-                        }
-                        data={genres}
-                        extraData={genres}
-                        renderItem={({ item }) => renderGenre(item)}
-                        keyExtractor={(x) => `${x.id}`}
-                      />
-                      <SearchBar
-                        placeholder="Add Genre..."
-                        onChangeText={(text) => setGenreString(text)}
-                        value={genreString}
-                        containerStyle={{
-                          backgroundColor: "transparent",
-                          borderTopColor: "transparent",
-                          borderBottomColor: "transparent",
-                          padding: 0,
-                        }}
-                        inputContainerStyle={{ backgroundColor: "transparent" }}
-                        inputStyle={{ backgroundColor: "white", fontSize: 14 }}
-                        placeholderTextColor={"#C7C7CD"}
-                        searchIcon={() => {
-                          return (
-                            <Ionicons
-                              name={"musical-notes"}
-                              size={22}
-                              color="#555"
-                            />
-                          );
-                        }}
-                        onSubmitEditing={() => addGenre()}
-                        onBlur={() => addGenre()}
-                      />
-                    </View>
-                    {info.role == "musician" ? (
-                      <>
-                        <View
-                          style={{
-                            borderWidth: 1,
-                            borderColor: theme.COLORS.LIGHTGRAY,
-                            borderRadius: 5,
-                            padding: 3,
-                            marginTop: 6,
-                          }}
-                        >
-                          <FlatList
-                            ref={(ref) => setFlatListRef(ref)}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            onContentSizeChange={() =>
-                              flatListRef.scrollToEnd({ animated: true })
-                            }
-                            onLayout={() =>
-                              flatListRef.scrollToEnd({ animated: true })
-                            }
-                            data={skills}
-                            extraData={skills}
-                            renderItem={({ item }) => renderSkill(item)}
-                            keyExtractor={(x) => `${x.id}`}
-                          />
-                          <SearchBar
-                            placeholder="Add Skill..."
-                            onChangeText={(text) => setSkillString(text)}
-                            value={skillString}
-                            containerStyle={{
-                              backgroundColor: "transparent",
-                              borderTopColor: "transparent",
-                              borderBottomColor: "transparent",
-                              padding: 0,
-                            }}
-                            inputContainerStyle={{
-                              backgroundColor: "transparent",
-                            }}
-                            inputStyle={{
-                              backgroundColor: "white",
-                              fontSize: 14,
-                            }}
-                            placeholderTextColor={"#C7C7CD"}
-                            searchIcon={() => {
-                              return (
-                                <Ionicons
-                                  name={"construct"}
-                                  size={22}
-                                  color="#555"
-                                />
-                              );
-                            }}
-                            onSubmitEditing={() => addSkill()}
-                            onBlur={() => addSkill()}
-                          />
-                        </View>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
+            </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.button} onPress={() => register()}>
+              <Text style={styles.text}>Register</Text>
+            </TouchableOpacity>
+          </ScrollView>
 
-                <Input
-                  icon="document-text"
-                  placeholder="Tell more about you..."
-                  containerStyle={[styles.inputContainer, {}]}
-                  multiline={true}
-                  textInputStyle={{
-                    height: 150,
-                    textAlignVertical: "top",
-                  }}
-                  value={about}
-                  onChangeText={(text) => setAbout(text)}
-                />
-              </View>
-              <TouchableOpacity style={styles.button} onPress={() => save()}>
-                <Text style={styles.text}>Register</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </KeyboardAvoidingView>
           <TouchableOpacity
             style={styles.headerBackButton}
             onPress={() => navigation.goBack()}
@@ -376,11 +422,26 @@ export default function App({ route, navigation }) {
   );
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAuth: (auth) => dispatch(actions.setAuth(auth)),
+  };
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.COLORS.PRIMARY,
-    justifyContent: 'center'
+    justifyContent: "center",
+  },
+  itemViewContainer: {
+    padding: 3,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: theme.COLORS.LIGHTGRAY,
+    flexDirection: "row",
+    marginVertical: 5,
+    marginHorizontal: 3,
   },
   headerBackButton: {
     position: "absolute",
@@ -394,7 +455,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   titleContainer: {
-    marginTop: 70,
+    marginTop: 50,
     marginBottom: 10,
   },
   img: {
@@ -429,7 +490,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.WHITE,
     padding: 10,
     marginHorizontal: 25,
-    marginVertical: 25,
+    marginTop: 20,
+    marginBottom: 30,
     paddingHorizontal: 10,
     borderRadius: 15,
     alignItems: "center",
@@ -444,3 +506,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
+
+export default connect(null, mapDispatchToProps)(App);

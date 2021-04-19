@@ -17,14 +17,16 @@ import * as Toast from "../../components/Toast";
 import Input from "../../components/Input";
 import theme from "../../theme";
 
+import { getData, postData } from "../../backend/FetchData";
+import { saveAuthInfo } from "../../backend/AuthStorage";
+
 //Redux
 import { connect } from "react-redux";
 import * as actions from "../../redux/actions/AuthActions";
 
 const { width } = Dimensions.get("screen");
 
-function App({ navigation, props }) {
-  const [isSelected, setSelection] = useState(false);
+function App(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -43,25 +45,11 @@ function App({ navigation, props }) {
             //success
             const data = await response.json();
 
-            const userInfo = await getData("/auth/user-info/" + data._id);
+            //const userInfo = await getData("/auth/user-info/" + data._id);
 
             //saving auth information (id and token)
-            await saveAuthInfo({ ...data, role: userInfo.role });
-
-            console.log(userInfo);
-            if (userInfo.role === "admin") {
-              navigation.replace("adminpanel");
-              return;
-            }
-
-            if (nextScreen != undefined) {
-              navigation.replace(nextScreen, {
-                cartData: cartData,
-                userId: data._id,
-              });
-            } else {
-              navigation.popToTop();
-            }
+            //await saveAuthInfo({ ...data, role: userInfo.role });
+            props.setAuth(data);
           } else {
             //fail
             response.text().then((text) => Toast.showError(text));
@@ -111,7 +99,7 @@ function App({ navigation, props }) {
                   containerStyle={styles.inputStyle}
                   value={email}
                   onChangeText={(text) => setEmail(text.toLowerCase())}
-                  autoCapitalize = 'characters'
+                  autoCapitalize="characters"
                 />
                 <Input
                   icon="key"
@@ -124,7 +112,9 @@ function App({ navigation, props }) {
                   autoCapitalize="none"
                 />
                 <View style={styles.checkbox}>
-                  <TouchableOpacity style={{ justifyContent: "center", alignSelf: 'center' }}>
+                  <TouchableOpacity
+                    style={{ justifyContent: "center", alignSelf: "center" }}
+                  >
                     <Text style={{ fontSize: 15, color: "#000" }}>
                       Forgot password ?
                     </Text>
@@ -133,7 +123,7 @@ function App({ navigation, props }) {
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => {
-                    props.setAuthentication(props);
+                    checklogin();
                   }}
                 >
                   <Text style={styles.text}>Sign In</Text>
@@ -143,7 +133,7 @@ function App({ navigation, props }) {
                 </Text>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => navigation.navigate("Register")}
+                  onPress={() => props.navigation.navigate("Register")}
                 >
                   <Text style={styles.text}>Register</Text>
                 </TouchableOpacity>
@@ -157,7 +147,7 @@ function App({ navigation, props }) {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    setAuthentication: (auth) => dispatch(actions.setAuth(true)),
+    setAuth: (auth) => dispatch(actions.setAuth(auth)),
   };
 };
 
@@ -195,7 +185,7 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     marginTop: 10,
-    marginBottom: 15
+    marginBottom: 15,
   },
   button: {
     backgroundColor: theme.COLORS.PRIMARY,

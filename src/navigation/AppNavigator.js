@@ -56,24 +56,24 @@ function HomeNavigator() {
 }
 
 const mapStateToProps = (state) => {
-  const { checkAuth } = state;
+  const { authentication } = state;
   return {
-    checkAuth: checkAuth,
+    checkAuth: authentication,
   };
 };
 
 function App(props) {
-
   return (
     <NavigationContainer>
       <StatusBar style="auto" />
-      <Stack.Navigator headerMode={props.checkAuth ? "float" : "none"} mode="modal">
-        {props.checkAuth ? (
+      <Stack.Navigator headerMode={props.checkAuth.length > 0 ? "float" : "none"} mode="modal">
+        {props.checkAuth.length > 0 ? (
           <>
             <Stack.Screen name="Home" component={HomeNavigator} />
           </>
         ) : (
           <>
+          {console.log(props.checkAuth)}
             <Stack.Screen name="Signin" component={SignInScreen} options={theme.HORIZONTAL_ANIMATION}/>
             <Stack.Screen name="Register" component={RegisterScreen} options={theme.HORIZONTAL_ANIMATION}/>
             <Stack.Screen name="RegisterInfo" component={RegisterScreen2} options={theme.HORIZONTAL_ANIMATION}/>

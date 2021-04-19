@@ -18,7 +18,6 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 export default function App({ navigation }) {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [fName, setFName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmePassword] = useState("");
@@ -26,24 +25,27 @@ export default function App({ navigation }) {
   const [selectedRole, setSelectedRole] = useState("fan");
 
   const checkToContinue = () => {
-      const tmpObj = {
-          email: email.toLowerCase(),
-          username: username.toLowerCase(),
+    if (
+      email != "" &&
+      fName != "" &&
+      password != "" &&
+      confirmPassword != ""
+    ) {
+      if (password === confirmPassword) {
+        const tmpObj = {
+          username: email.toLowerCase(),
           fname: fName,
           password: password.toLowerCase(),
           role: selectedRole,
+        };
+        navigation.navigate("RegisterInfo", { info: tmpObj });
+      } else {
+        Toast.showError("Password and Confirm password must match !");
       }
-      navigation.navigate("RegisterInfo", {info: tmpObj})
-    //   if(email != '' && username != '' && fName != '' && password != '' && confirmPassword != ''){
-    //     if(password === confirmPassword){
-    //         navigation.navigate("RegisterInfo", {info: tmpObj})
-    //     } else {
-    //         Toast.showError("Password and Confirm password must match !");
-    //     }
-    //   } else {
-    //     Toast.showError("All fields are required");
-    //   }
-  }
+    } else {
+      Toast.showError("All fields are required");
+    }
+  };
 
   const tabRole = () => {
     return (
@@ -121,15 +123,7 @@ export default function App({ navigation }) {
               containerStyle={styles.inputContainer}
               value={email}
               onChangeText={(text) => setEmail(text)}
-              autoCapitalize = 'characters'
-            />
-            <Input
-              icon="person-add"
-              placeholder="Username"
-              textContentType="username"
-              containerStyle={styles.inputContainer}
-              value={username}
-              onChangeText={(username) => setUsername(username)}
+              autoCapitalize="characters"
             />
             <Input
               icon="person"
@@ -138,6 +132,7 @@ export default function App({ navigation }) {
               containerStyle={styles.inputContainer}
               value={fName}
               onChangeText={(fname) => setFName(fname)}
+              autoCapitalize="characters"
             />
             <Input
               icon="key"
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 5,
     marginHorizontal: 25,
     paddingHorizontal: 20,
-    paddingVertical: 5
+    paddingVertical: 5,
   },
   inputContainer: {
     flexDirection: "row",

@@ -13,12 +13,17 @@ const Input = ({
   keyboardType,
   secureEntry,
   textContentType,
+  containerStyle,
+  returnKeyType,
+  multiline,
+  numberOfLines,
+  textInputStyle,
   value,
 }) => {
   const [inFocus, setInFocus] = useState(false);
 
   return (
-    <View style={styles.container} onPress={() => setInFocus(true)}>
+    <View style={containerStyle} onPress={() => setInFocus(true)}>
       <View style={styles.icon}>
         <Ionicons
           name={icon}
@@ -30,14 +35,16 @@ const Input = ({
         <TextInput
           textContentType={textContentType}
           keyboardType={keyboardType}
+          returnKeyType={returnKeyType}
           secureTextEntry={secureEntry}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
           onFocus={() => setInFocus(true)}
           onBlur={() => setInFocus(false)}
-          style={{ fontSize: 18 }}
           placeholder={placeholder}
-          placeholderTextColor="#555"
           onChangeText={onChangeText}
           value={value}
+          style={textInputStyle}
         />
       </View>
     </View>
@@ -45,23 +52,14 @@ const Input = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ddd",
-    width: width / 1.2,
-    borderRadius: 10,
-    marginVertical: 6,
-  },
   icon: {
     flex: 0.1,
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
   },
   input: {
     flex: 0.8,
-    padding: 14,
+    paddingVertical: 14,
   },
 });
 

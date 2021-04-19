@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import HomeScreen from "../screens/Home";
 import SignInScreen from "../screens/authentication/Signin";
 import RegisterScreen from "../screens/authentication/Register";
+import RegisterScreen2 from "../screens/authentication/RegisterInfo"
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,33 +56,33 @@ function HomeNavigator() {
 }
 
 const mapStateToProps = (state) => {
-    const { checkAuth } = state;
-    return {
-        checkAuth: checkAuth,
-    }
-}
+  const { checkAuth } = state;
+  return {
+    checkAuth: checkAuth,
+  };
+};
 
 function App(props) {
-  const [isSignedIn, setIsSignedIn] = useState(false);
 
   return (
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <Stack.Navigator headerMode={"none"} mode="modal">
-          {props.checkAuth ? (
-            <>
-              <Stack.Screen name="Home" component={HomeNavigator} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Signin" component={SignInScreen} />
-              <Stack.Screen name="Register" component={RegisterScreen} />
-            </>
-          )}
-        </Stack.Navigator>
-        <Toast ref={(ref) => Toast.setRef(ref)} />
-      </NavigationContainer>
+    <NavigationContainer>
+      <StatusBar style="auto" />
+      <Stack.Navigator headerMode={props.checkAuth ? "float" : "none"} mode="modal">
+        {props.checkAuth ? (
+          <>
+            <Stack.Screen name="Home" component={HomeNavigator} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Signin" component={SignInScreen} options={theme.HORIZONTAL_ANIMATION}/>
+            <Stack.Screen name="Register" component={RegisterScreen} options={theme.HORIZONTAL_ANIMATION}/>
+            <Stack.Screen name="RegisterInfo" component={RegisterScreen2} options={theme.HORIZONTAL_ANIMATION}/>
+          </>
+        )}
+      </Stack.Navigator>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+    </NavigationContainer>
   );
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(App);

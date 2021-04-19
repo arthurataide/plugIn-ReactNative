@@ -5,9 +5,7 @@ export const showError = (message) => {
     type: "error",
     text1: "Attention! 👋",
     text2: message,
-    position: "bottom",
-    topOffset: 60,
-    bottomOffset: 80,
+    topOffset: 80,
   });
 };
 
@@ -15,6 +13,6 @@ export const show = (message) => {
   Toast.show({
     text1: "Hello there! 👋",
     text2: message,
-    topOffset: 60,
+    topOffset: 80,
   });
 };

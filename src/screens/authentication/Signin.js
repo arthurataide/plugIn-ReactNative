@@ -13,7 +13,6 @@ import {
   KeyboardAvoidingView,
   Dimensions,
 } from "react-native";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as Toast from "../../components/Toast";
 import Input from "../../components/Input";
 import theme from "../../theme";
@@ -31,10 +30,6 @@ function App({ navigation, props }) {
 
   const checklogin = async () => {
     if (email != "" && password != "") {
-      // if (email === "admin"){
-      //   navigation.navigate('adminpanel')
-      //   return;
-      // }
       const authData = {
         email,
         password,
@@ -113,40 +108,23 @@ function App({ navigation, props }) {
                   placeholder="Email"
                   keyboardType="email-address"
                   textContentType="emailAddress"
+                  containerStyle={styles.inputStyle}
                   value={email}
-                  onChangeText={(email) => setEmail(email.toLowerCase())}
+                  onChangeText={(text) => setEmail(text.toLowerCase())}
+                  autoCapitalize = 'characters'
                 />
                 <Input
                   icon="key"
                   placeholder="Password"
                   secureEntry={true}
                   textContentType="password"
+                  containerStyle={styles.inputStyle}
                   value={password}
                   onChangeText={(pass) => setPassword(pass.toLowerCase())}
                   autoCapitalize="none"
                 />
-                <View
-                  style={[
-                    styles.checkbox,
-                    {
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      marginRight: 10,
-                    },
-                  ]}
-                >
-                  <BouncyCheckbox
-                    textDecoration={true}
-                    isChecked={false}
-                    value={isSelected}
-                    textColor="#000"
-                    borderColor={theme.COLORS.PRIMARY}
-                    fillColor={theme.COLORS.PRIMARY}
-                    text="Remember me"
-                    textStyle={{ fontSize: 15, textDecorationLine: "none" }}
-                    onValueChange={setSelection}
-                  />
-                  <TouchableOpacity style={{ justifyContent: "center" }}>
+                <View style={styles.checkbox}>
+                  <TouchableOpacity style={{ justifyContent: "center", alignSelf: 'center' }}>
                     <Text style={{ fontSize: 15, color: "#000" }}>
                       Forgot password ?
                     </Text>
@@ -204,16 +182,24 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "700",
   },
+  inputStyle: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ddd",
+    borderRadius: 10,
+    marginVertical: 6,
+  },
   inputContainer: {
     marginVertical: 30,
   },
   checkbox: {
-    marginVertical: 15,
+    marginTop: 10,
+    marginBottom: 15
   },
   button: {
     backgroundColor: theme.COLORS.PRIMARY,
     padding: 12,
-    width: width / 1.2,
     paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: "center",

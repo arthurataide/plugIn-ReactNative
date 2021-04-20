@@ -12,7 +12,7 @@ import theme from "../theme";
 //Redux
 import { connect } from "react-redux";
 
-import HomeScreen from "../screens/Home";
+import HomeScreen from "../screens/main/Home";
 import SignInScreen from "../screens/authentication/Signin";
 import RegisterScreen from "../screens/authentication/Register";
 import RegisterScreen2 from "../screens/authentication/RegisterInfo"
@@ -65,7 +65,8 @@ const mapStateToProps = (state) => {
 function App(props) {
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
+      <HomeNavigator/>
+      {/* <StatusBar style="auto" />
       <Stack.Navigator headerMode={props.checkAuth.length > 0 ? "float" : "none"} mode="modal">
         {props.checkAuth.length > 0 ? (
           <>
@@ -80,7 +81,7 @@ function App(props) {
           </>
         )}
       </Stack.Navigator>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Toast ref={(ref) => Toast.setRef(ref)} /> */}
     </NavigationContainer>
   );
 }

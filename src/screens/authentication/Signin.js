@@ -24,17 +24,14 @@ import { saveAuthInfo } from "../../backend/AuthStorage";
 import { connect } from "react-redux";
 import * as actions from "../../redux/actions/AuthActions";
 
-const { width } = Dimensions.get("screen");
-
 function App(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const checklogin = async () => {
     if (email != "" && password != "") {
-      console.log(email + password)
       const authData = {
-        username: email,
+        username: email.toLowerCase(),
         password,
       };
 
@@ -42,16 +39,17 @@ function App(props) {
       const response = await postData("/auth/signin/", authData);
       try {
         if (response.status) {
-          //console.log(response)
           if (response.status >= 200 && response.status <= 300) {
             //success
             const data = await response.json();
 
-            //const userInfo = await getData("/auth/user-info/" + data._id);
+            const userInfo = getData("/auth/user-info/" + data._id);
+            userInfo.then((dataInfo) => {
+              props.setAuth(dataInfo);
+            });
 
             //saving auth information (id and token)
-            //await saveAuthInfo({ ...data, role: userInfo.role });
-            props.setAuth(data);
+            await saveAuthInfo({ ...data, role: userInfo.role });
           } else {
             //fail
             response.text().then((text) => Toast.showError(text));
@@ -100,8 +98,7 @@ function App(props) {
                   textContentType="emailAddress"
                   containerStyle={styles.inputStyle}
                   value={email}
-                  onChangeText={(text) => setEmail(text.toLowerCase())}
-                  autoCapitalize="characters"
+                  onChangeText={(text) => setEmail(text)}
                 />
                 <Input
                   icon="key"

@@ -19,7 +19,7 @@ const saveAuthInfo = async (data) => {
     }catch(e){console.error(e)}
 }
 
-const deleteAuthInfo = async (data) => {
+const deleteAuthInfo = async () => {
     try{
         await Storage.clearMapForKey(KEY)
     }catch(e){console.error(e)}

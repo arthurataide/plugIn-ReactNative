@@ -17,7 +17,8 @@ import Input from "../../components/Input";
 import GroupInput from "../../components/GroupInput";
 import theme from "../../theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import { updateData, postData } from "../../backend/FetchData";
+import { getData, updateData, postData } from "../../backend/FetchData";
+import { saveAuthInfo } from "../../backend/AuthStorage";
 
 //Redux
 import { connect } from "react-redux";
@@ -51,32 +52,37 @@ function App(props) {
   const save = async () => {
     try {
       if (picture.base64string) {
-        const promises = uploadImage([picture].base64string);
-        const resultUploadImage = await Promise.all(promises);
-        await postUser(resultUploadImage);
+        const promise = uploadImage(picture.base64string);
+        promise.then((data) => {
+          console.log(data);
+          postUser(data);
+        });
       } else {
         await postUser();
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const postUser = async (uploadedImage) => {
-    var pictures;
+    var pictures = [];
     //const oldPictures = dataImages;
-    console.log('PostUser----')
-    pictures = picture;
-    if (uploadedImage != undefined && uploadImage.status === 200) {
-      pictures = {
-        name: uploadImage.data.id,
-        url: uploadImage.data.url,
-      };
+    //console.log("PostUser----");
+    //console.log(uploadedImage);
+
+    if (picture.base64string) {
+      if (uploadedImage != undefined && uploadedImage.status === 200) {
+        pictures = {
+          name: uploadedImage.data.id,
+          url: uploadedImage.data.url,
+        };
+      }
+    } else {
+      pictures = picture;
     }
     //console.log("pictures")
-    console.log(pictures)
+    //console.log(pictures)
 
     const newUser = {
       username: info.username,
@@ -90,13 +96,16 @@ function App(props) {
       pictureUrl: pictures.url,
       status: "active",
     };
-    console.log(newUser)
+    console.log(newUser);
     try {
       const response = await updateData("/auth/user-info/", newUser);
       if (response) {
         //Error
         if (response.status >= 400) {
-          response.text().then((text) => {Toast.showError(text); console.log(text)});
+          response.text().then((text) => {
+            Toast.showError(text);
+            //console.log(text);
+          });
           return;
         }
         if (response.status === 200) {
@@ -109,7 +118,7 @@ function App(props) {
   };
 
   const register = async () => {
-    setLoading(true)
+    setLoading(true);
     const newUser = {
       username: info.username,
       password: info.password,
@@ -121,7 +130,7 @@ function App(props) {
         //Error
         if (response.status >= 400) {
           response.text().then((text) => Toast.showError(text));
-          props.navigation.navigation("SignIn")
+          props.navigation.navigation("SignIn");
         } else {
           save();
         }
@@ -143,11 +152,13 @@ function App(props) {
           //success
           const data = await response.json();
 
-          //const userInfo = await getData("/auth/user-info/" + data._id);
-
+          const userInfo = getData("/auth/user-info/" + data._id);
+          userInfo.then((dataInfo) => {
+            props.setAuth(dataInfo);
+          });
           //saving auth information (id and token)
-          //await saveAuthInfo({ ...data, role: userInfo.role });
-          props.setAuth(data);
+          await saveAuthInfo({ ...data, role: userInfo.role });
+
           setLoading(false);
         } else {
           //fail
@@ -162,7 +173,7 @@ function App(props) {
   const uploadImage = async (base64String) => {
     try {
       var tmpImage = {
-        folder: "User",
+        folder: "profile",
         base64string: base64String,
       };
       const response = await postData("/storage/", tmpImage);
@@ -283,7 +294,7 @@ function App(props) {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-    
+
       {loading ? (
         <View
           style={{
@@ -408,7 +419,7 @@ function App(props) {
 
           <TouchableOpacity
             style={styles.headerBackButton}
-            onPress={() => navigation.goBack()}
+            onPress={() => props.navigation.goBack()}
           >
             <FontAwesome5
               name="angle-left"

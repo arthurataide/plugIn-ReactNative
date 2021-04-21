@@ -22,7 +22,9 @@ import SignInScreen from "../screens/authentication/Signin";
 import RegisterScreen from "../screens/authentication/Register";
 import RegisterScreen2 from "../screens/authentication/RegisterInfo";
 import VacanciesScreen from "../screens/main/Vacancies";
-import NewEventScreen from "../screens/main/NewEvent";
+import NewEventScreen from "../screens/main/Event/NewEvent";
+import CommentsScreen from "../screens/main/Post/Comments";
+import ProfileScreen from "../screens/main/Profile/Profile"
 
 const Stack = createStackNavigator();
 
@@ -89,6 +91,7 @@ function App(props) {
       <Stack.Navigator
         headerMode={props.checkAuth.length > 0 ? "float" : "none"}
         mode="modal"
+        screenOptions={{headerTintColor: theme.COLORS.PRIMARY}}
       >
         {props.checkAuth.length > 0 ? (
         <>
@@ -100,6 +103,15 @@ function App(props) {
           <Stack.Screen
             name="Vacancies"
             component={VacanciesScreen}
+          />
+          <Stack.Screen
+            name="Comments"
+            component={CommentsScreen}
+            options={theme.HORIZONTAL_ANIMATION}
+          />
+          <Stack.Screen
+            name="PageProfile"
+            component={ProfileScreen}
             options={theme.HORIZONTAL_ANIMATION}
           />
           <Stack.Screen
@@ -113,7 +125,6 @@ function App(props) {
             <Stack.Screen
               name="SplashScreen"
               component={SplashScreen}
-              options={theme.HORIZONTAL_ANIMATION}
             />
             <Stack.Screen
               name="Signin"

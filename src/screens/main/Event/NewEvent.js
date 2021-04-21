@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Button, StyleSheet, TextInput } from "react-native";
-import theme from "../../theme";
+import theme from "../../../theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default () => {
@@ -33,12 +33,13 @@ export default () => {
       <View style={styles.inputContainer}>
         <TextInput style={styles.inputText} placeholder={"Title"} />
       </View>
-      <View>
+      
+      {/* <View>
         <Button onPress={showDatepicker} title="Show date picker!" />
       </View>
       <View>
         <Button onPress={showTimepicker} title="Show time picker!" />
-      </View>
+      </View> */}
       {/* {show && (
         <DateTimePicker
           style={{ width:100, height:100 }}

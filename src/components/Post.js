@@ -20,8 +20,6 @@ const { width } = Dimensions.get("window");
 const PostList = ({ items, navigation }) => {
   const ref = useRef(null);
 
-  const getTotalComments = (id) => {};
-
   const getVideoId = (url) => {
     var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
@@ -59,7 +57,7 @@ const PostList = ({ items, navigation }) => {
           <View style={styles.profilePostContainer}>
             <TouchableOpacity
               style={styles.profilePostContainer}
-              onPress={() => navigation.navigate("Profile", {userId: item.userId})}
+              onPress={() => navigation.navigate("PageProfile", {userId: item.userId})}
             >
               <Image
                 style={styles.profileImg}
@@ -92,7 +90,7 @@ const PostList = ({ items, navigation }) => {
             <Text style={styles.description}>{item.description}</Text>
           </View>
           <View style={styles.commentsContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("comments", {itemId: item._id})}>
+            <TouchableOpacity onPress={() => navigation.navigate("Comments", {postId: item._id})}>
               <Text>See all {item.commentsTotal} comments</Text>
             </TouchableOpacity>
           </View>
@@ -136,19 +134,6 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     fontWeight: "bold",
-  },
-  searchBarContainerStyle: {
-    backgroundColor: "transparent",
-    borderTopColor: "transparent",
-    borderBottomColor: "transparent",
-    padding: 0,
-  },
-  searchBarInputContainerStyle: {
-    backgroundColor: "transparent",
-  },
-  searchBarInputStyle: {
-    backgroundColor: "white",
-    fontSize: 14,
   },
   separator: {
     borderTopColor: theme.COLORS.LIGHTGRAY,

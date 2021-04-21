@@ -10,7 +10,6 @@ import EventsScreen from "../screens/main/Events";
 import SearchScreen from "../screens/main/Search";
 import MyProfileScreen from "../screens/main/MyProfile";
 
-
 import theme from "../theme";
 
 const Tab = createBottomTabNavigator();

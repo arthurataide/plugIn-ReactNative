@@ -1,9 +1,14 @@
 import React from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, ScrollView, StyleSheet} from "react-native";
+import Button from "../../components/Button";
+import Divider from "../../components/Divider"
 
-export default ()=>(
+export default ({ navigation })=>(
     <View style={styles.container}>
-        <Text>Events</Text>
+        <ScrollView>
+            <Button title={"New Event 🎸 "} onPress={()=>navigation.navigate("NewEvent")} />
+            <Divider/>
+        </ScrollView>
     </View>
 )
 
@@ -12,6 +17,8 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: "#fff",
       alignItems: "center",
-      justifyContent: "center",
+      justifyContent: "flex-start",
+      paddingTop: 8,
+      paddingHorizontal:12
     },
 });

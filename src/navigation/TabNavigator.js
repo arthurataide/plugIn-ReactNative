@@ -1,5 +1,5 @@
 import React from "react"
-import { View,  Text, StyleSheet } from "react-native"
+import { View,  Text, StyleSheet, Platform } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
@@ -24,7 +24,7 @@ export default ()=> {
             
             if (route.name != "NewPost"){
                 let title = focused ? route.name : ""
-                return <Text style={{ color: color, fontSize: size }}>{title}</Text>;
+                return <Text style={{ color: color, fontSize: 13 }}>{title}</Text>;
             }
             
           },
@@ -35,7 +35,7 @@ export default ()=> {
             if (route.name === "NewPost") {
               return (
                 <View style={styles.addPostContainer}>
-                    <Ionicons name={"add-circle"} size={90} color={theme.COLORS.PRIMARY}/>
+                    <Ionicons name={"add-circle"} size={Platform.OS === 'android' ? 70 :80} color={theme.COLORS.PRIMARY}/>
                 </View>
              )
 
@@ -49,13 +49,14 @@ export default ()=> {
               iconName = "home";
             }
 
-            return <FontAwesome5 name={iconName} size={size} color={color}/>
+            return <FontAwesome5 name={iconName} size={22} color={color}/>
           },
         })}
         tabBarOptions={{
           activeTintColor: theme.COLORS.PRIMARY,
           inactiveTintColor: "lightgray",
           keyboardHidesTabBar: true,
+          tabStyle: {paddingTop: Platform.OS == 'android' ? 5 : 0}
         }}>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Search" component={SearchScreen} />
@@ -68,9 +69,9 @@ export default ()=> {
 
   const styles = StyleSheet.create({
     addPostContainer: {
-        height: 100,
-        width: 100,
-        borderRadius: 100,
+        height: 90,
+        width: 90,
+        borderRadius: 90,
         backgroundColor: 'transparent',
         alignItems: 'center',
     }

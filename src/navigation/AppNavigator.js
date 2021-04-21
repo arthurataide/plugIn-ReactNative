@@ -112,7 +112,7 @@ function App(props) {
           <Stack.Screen
             name="PageProfile"
             component={ProfileScreen}
-            options={theme.HORIZONTAL_ANIMATION}
+            options={theme.HORIZONTAL_ANIMATION, {headerShown: false}}
           />
         </>
         ) : (

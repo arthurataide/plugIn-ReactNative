@@ -17,8 +17,8 @@ import theme from "../../theme";
 
 const { width } = Dimensions.get("window");
 
-const ProfileItem = ({ item }) => (
-  <TouchableOpacity>
+const ProfileItem = ({ item, navigation }) => (
+  <TouchableOpacity onPress={() => navigation.navigate("PageProfile", {userId: item._id})}>
     <View style={styles.profileContainer}>
       <LinearGradient
         style={styles.profileImageContainer}
@@ -71,7 +71,7 @@ export default function App(props) {
           style={styles.profileList}
           data={userProfiles}
           keyExtractor={(x) => x._id}
-          renderItem={({ item }) => <ProfileItem item={item} />}
+          renderItem={({ item }) => <ProfileItem item={item} navigation={props.navigation} />}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />

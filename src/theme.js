@@ -1,4 +1,8 @@
+import { Dimensions } from "react-native";
+
 import { Platform } from "react-native";
+
+const { width } = Dimensions.get("window");
 
 const COLORS = {
   WHITE: "#FFFFFF",
@@ -22,12 +26,14 @@ const COLORS = {
   DRIBBBLE: "#EA4C89",
   ICON: "#000000",
   TITLE: "#979ca8",
+  INNER_TEXT: "#707880",
 };
 
 const SIZES = {
   BASE: 16,
   FONT: 16,
   OPACITY: 0.8,
+  MAX_WIDTH: width - 24
 };
 
 const FONT = {

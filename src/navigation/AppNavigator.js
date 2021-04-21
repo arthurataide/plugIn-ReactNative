@@ -5,7 +5,6 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import Toast from "react-native-toast-message";
 import theme from "../theme";
 
 import { getAuthInfo, deleteAuthInfo } from "../backend/AuthStorage";
@@ -23,6 +22,7 @@ import SignInScreen from "../screens/authentication/Signin";
 import RegisterScreen from "../screens/authentication/Register";
 import RegisterScreen2 from "../screens/authentication/RegisterInfo";
 import VacanciesScreen from "../screens/main/Vacancies";
+import NewEventScreen from "../screens/main/Event/NewEvent";
 import CommentsScreen from "../screens/main/Post/Comments";
 import ProfileScreen from "../screens/main/Profile/Profile"
 
@@ -114,6 +114,11 @@ function App(props) {
             component={ProfileScreen}
             options={theme.HORIZONTAL_ANIMATION, {headerShown: false}}
           />
+          <Stack.Screen
+            name="NewEvent"
+            component={NewEventScreen}
+            options={{...theme.HORIZONTAL_ANIMATION, title:"New Event"}}
+          />
         </>
         ) : (
           <>
@@ -139,7 +144,6 @@ function App(props) {
           </>
         )}
       </Stack.Navigator>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
     </NavigationContainer>
   );
 }

@@ -1,31 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import theme from "../../../theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import Button from "../../../components/Button";
 
 export default () => {
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    console.log(currentDate)
-    setShow(Platform.OS === "ios")
-    setDate(currentDate)
-  };
-
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode("date");
-  };
-
-  const showTimepicker = () => {
-    showMode("time");
+    setDate(currentDate);
   };
 
   return (
@@ -33,24 +17,39 @@ export default () => {
       <View style={styles.inputContainer}>
         <TextInput style={styles.inputText} placeholder={"Title"} />
       </View>
-      
-      {/* <View>
-        <Button onPress={showDatepicker} title="Show date picker!" />
+      <View
+        style={{
+          width: theme.SIZES.MAX_WIDTH,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={styles.dateContainer}>
+          <DateTimePicker
+            style={{ backgroundColor: theme.COLORS.WHITE }}
+            testID="dateTimePicker"
+            value={date}
+            mode={"date"}
+            onChange={onChange}
+          />
+        </View>
+        <View style={styles.dateContainer}>
+          <DateTimePicker
+            testID="dateTimePicker2"
+            value={date}
+            mode={"time"}
+            is24Hour={true}
+            onChange={onChange}
+          />
+        </View>
       </View>
-      <View>
-        <Button onPress={showTimepicker} title="Show time picker!" />
-      </View> */}
-      {/* {show && (
-        <DateTimePicker
-          style={{ width:100, height:100 }}
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
-        />
-      )} */}
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputText} placeholder={"Address"} />
+      </View>
+      <View style={styles.inputContainer}>
+          <TextInput multiline={true} style={[styles.inputText, {height: 120}]} placeholder={"Event Description"} />
+      </View>
+      <Button title={"SAVE"} layout={"filled"} />
     </View>
   );
 };
@@ -68,6 +67,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: theme.SIZES.MAX_WIDTH,
     padding: 15,
+    marginVertical: 8,
+  },
+  dateContainer: {
+    borderWidth: 2,
+    borderColor: theme.COLORS.PRIMARY,
+    borderRadius: 10,
+    width: theme.SIZES.MAX_WIDTH / 2 - 10,
+    padding: 10,
+    marginVertical: 2,
   },
   inputText: {
     fontSize: 18,

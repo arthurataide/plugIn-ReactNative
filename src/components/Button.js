@@ -7,10 +7,23 @@ import {
 } from "react-native";
 import theme from "../theme";
 
-export default ({ title, onPress }) => (
+const layoutTypes = {
+    default: "default",
+    filled: "filled",
+}
+
+export default ({ title, onPress, layout = layoutTypes.default }) => (
   <View style={styles.container}>
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
+    <TouchableOpacity style={
+        layout == layoutTypes.filled 
+        ? styles.filledButton
+        : styles.button
+    } onPress={onPress}>
+      <Text style={
+        layout == layoutTypes.filled 
+        ? styles.filledText
+        : styles.text
+    }>{title}</Text>
     </TouchableOpacity>
   </View>
 );
@@ -18,7 +31,6 @@ export default ({ title, onPress }) => (
 const styles = StyleSheet.create({
   container: {},
   button: {
-    //backgroundColor: theme.COLORS.PRIMARY,
     padding: 16,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -27,9 +39,23 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: theme.COLORS.PRIMARY,
   },
+  filledButton: {
+    padding: 16,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    width: theme.SIZES.MAX_WIDTH,
+    backgroundColor: theme.COLORS.PRIMARY,
+  },
   text: {
     alignSelf: "center",
     color: theme.COLORS.INNER_TEXT,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  filledText: {
+    alignSelf: "center",
+    color: theme.COLORS.WHITE,
     fontSize: 18,
     fontWeight: "600",
   },

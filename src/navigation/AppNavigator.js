@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import theme from "../theme";
 
@@ -15,51 +14,17 @@ import { getAuthInfo, deleteAuthInfo } from "../backend/AuthStorage";
 import { connect } from "react-redux";
 import * as actions from "../redux/actions/AuthActions";
 
-import HomeScreen from "../screens/main/Home";
-import AccountScreen from "../screens/Account";
+//Navigators
+import TabNavigator from "./TabNavigator";
 
+//Screens
 import SplashScreen from "../screens/authentication/SplashScreen";
 import SignInScreen from "../screens/authentication/Signin";
 import RegisterScreen from "../screens/authentication/Register";
 import RegisterScreen2 from "../screens/authentication/RegisterInfo";
+import VacanciesScreen from "../screens/main/Vacancies";
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-
-function HomeNavigator() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        title: ({ focused, color, size }) => {
-          let title;
-          if (route.name === "Home") {
-            title = focused ? "Home" : "";
-          } else if (route.name === "Account") {
-            title = focused ? "Account" : "";
-          }
-          return <Text style={{ color: color, fontSize: size }}>{title}</Text>;
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home";
-          } else if (route.name === "Account") {
-            iconName = focused ? "user-alt" : "user";
-          }
-          return <FontAwesome5 name={iconName} size={size} color={color} />;
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: theme.COLORS.PRIMARY,
-        inactiveTintColor: "lightgray",
-        keyboardHidesTabBar: true,
-      }}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
-    </Tab.Navigator>
-  );
-}
 
 const mapStateToProps = (state) => {
   const { authentication } = state;
@@ -67,10 +32,53 @@ const mapStateToProps = (state) => {
     checkAuth: authentication,
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     setAuth: (auth) => dispatch(actions.setAuth(auth)),
     deleteAuth: () => dispatch(actions.deleteAuth()),
+  };
+};
+
+const headerRight = (props, navigation) => (
+  <View style={{ flexDirection: "row" }}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Vacancies')}
+    >
+      <MaterialCommunityIcons
+        name={"account-multiple-plus"}
+        size={25}
+        color={theme.COLORS.PRIMARY}
+        style={{ marginRight: 10 }}
+      />
+    </TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => deleteAuthInfo().then(() => props.deleteAuth())}
+    >
+      <Ionicons
+        name={"log-out-outline"}
+        size={25}
+        color={theme.COLORS.PRIMARY}
+        style={{ marginRight: 10 }}
+      />
+    </TouchableOpacity>
+  </View>
+);
+
+const tabStackOptions = (props, navigation) => {
+  return {
+    headerTitle: () => {
+      return (
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={require("../../assets/PlugIn-icon.png")}
+            style={{ height: 25, width: 25, marginRight: 10 }}
+          />
+          <Text style={styles.title}>Plug In</Text>
+        </View>
+      );
+    },
+    headerRight: () => headerRight(props, navigation),
   };
 };
 
@@ -83,36 +91,18 @@ function App(props) {
         mode="modal"
       >
         {props.checkAuth.length > 0 ? (
-          <>
-            <Stack.Screen
-              name="Home"
-              component={HomeNavigator}
-              options={{
-                headerTitle: () => {
-                  return (
-                    <View style={{flexDirection: "row"}}>
-                      <Image source={require('../../assets/PlugIn-icon.png')} style={{height: 25, width: 25, marginRight: 10}}/>
-                      <Text style={styles.title}>Plug In</Text>
-                    </View>
-                  );
-                },
-                headerRight: () => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      deleteAuthInfo().then(() => props.deleteAuth());
-                    }}
-                  >
-                    <Ionicons
-                      name={"log-out-outline"}
-                      size={25}
-                      color={theme.COLORS.PRIMARY}
-                      style={{ marginRight: 10 }}
-                    />
-                  </TouchableOpacity>
-                ),
-              }}
-            />
-          </>
+        <>
+          <Stack.Screen
+            name="Home"
+            component={TabNavigator}
+            options={({navigation}) => tabStackOptions(props, navigation)}
+          />
+          <Stack.Screen
+            name="Vacancies"
+            component={VacanciesScreen}
+            options={theme.HORIZONTAL_ANIMATION}
+          />
+        </>
         ) : (
           <>
             <Stack.Screen
@@ -148,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: theme.COLORS.PRIMARY,
-    textTransform: 'uppercase'
+    textTransform: "uppercase",
   },
 });
 

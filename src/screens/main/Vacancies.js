@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   Image,
   Dimensions,
   TouchableOpacity,
@@ -14,6 +13,7 @@ import { getData } from "../../backend/FetchData";
 import theme from "../../theme";
 import Divider from "../../components/Divider";
 import Button from "../../components/Button";
+import CustomModal from "../../components/CustomModal";
 
 const { width } = Dimensions.get("window").width;
 
@@ -21,6 +21,7 @@ export default ({ navigation }) => {
   const [vacancies, setVacancies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState([]);
+  const [modalVisibility, setModalVisibility] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -42,11 +43,19 @@ export default ({ navigation }) => {
     });
   }, [navigation]);
 
+  const submitApplication = () => {
+    setModalVisibility(false);
+  };
+
+  const hideModal = () => {
+    setModalVisibility(false);
+  };
+
   const VacancyList = ({ items }) => {
     return (
       <>
         {items.map((item, key) => (
-          <View style={{ alignItems: "center" }}>
+          <View key={key} style={{ alignItems: "center" }}>
             <View style={styles.cardContainer}>
               <Image
                 style={styles.cardImage}
@@ -61,7 +70,10 @@ export default ({ navigation }) => {
               </View>
 
               {user.role == "band" ? (
-                <TouchableOpacity style={styles.cardButton}>
+                <TouchableOpacity
+                  style={styles.cardButton}
+                  onPress={() => setModalVisibility(true)}
+                >
                   <Text style={styles.cardButtonText}>Apply</Text>
                 </TouchableOpacity>
               ) : (
@@ -92,7 +104,17 @@ export default ({ navigation }) => {
       {loading ? (
         <ActivityIndicator color={theme.COLORS.PRIMARY} size={"large"} />
       ) : (
+        <>
+          <CustomModal
+            title={"APPLICATION"}
+            visible={modalVisibility}
+            onCancel={() => hideModal()}
+            onSave={() => submitApplication()}>
+
+            </CustomModal>
+
           <VacancyList items={vacancies} />
+        </>
       )}
     </View>
   );

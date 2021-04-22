@@ -40,7 +40,7 @@ const PostList = ({ items, navigation }) => {
           <YoutubePlayer
             webViewStyle={{ borderRadius: 10 }}
             height={240}
-            width={width - 22}
+            width={width - 40}
             play={false}
             videoId={getVideoId(item.url)}
           />

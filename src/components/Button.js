@@ -29,7 +29,7 @@ export default ({ title, onPress, layout = layoutTypes.default }) => (
 );
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {marginBottom:30},
   button: {
     padding: 16,
     paddingHorizontal: 10,

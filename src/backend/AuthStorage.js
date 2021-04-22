@@ -4,7 +4,8 @@ const KEY = "authentication"
 const getAuthInfo = async () => {
     try{
         const data = await Storage.getAllDataForKey(KEY)
-
+        // console.log("user-data")
+        // console.log(data)
         if (data.length > 0){
             return data[0]
         }
@@ -13,8 +14,6 @@ const getAuthInfo = async () => {
 
 const saveAuthInfo = async (data) => {
     try{
-        console.log("saveAuthInfo")
-        console.log(data)
         await Storage.save({key: KEY, id: data._id, data: data})
     }catch(e){console.error(e)}
 }

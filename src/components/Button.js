@@ -4,6 +4,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import theme from "../theme";
 
@@ -12,18 +13,24 @@ const layoutTypes = {
     filled: "filled",
 }
 
-export default ({ title, onPress, layout = layoutTypes.default }) => (
+export default ({ title, onPress, loading = false, layout = layoutTypes.default }) => (
   <View style={styles.container}>
     <TouchableOpacity style={
         layout == layoutTypes.filled 
         ? styles.filledButton
         : styles.button
     } onPress={onPress}>
-      <Text style={
+
+    { loading 
+    ? <ActivityIndicator color={ layout == layoutTypes.filled ? theme.COLORS.WHITE : theme.COLORS.PRIMARY } />
+    :
+    <Text style={
         layout == layoutTypes.filled 
         ? styles.filledText
         : styles.text
     }>{title}</Text>
+    }
+    
     </TouchableOpacity>
   </View>
 );

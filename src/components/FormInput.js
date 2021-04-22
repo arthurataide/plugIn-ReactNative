@@ -2,12 +2,14 @@ import React from "react";
 import { StyleSheet, View, TextInput } from "react-native";
 import theme from "../theme";
 
-export default ({ placeholder, multiline = false }) => (
+export default ({ placeholder, multiline = false, value, onChangeText }) => (
   <View style={styles.inputContainer}>
     <TextInput
       multiline={multiline}
       style={[styles.inputText, { height: multiline ? 150 : "auto" }]}
       placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
     />
   </View>
 );

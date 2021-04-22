@@ -64,7 +64,7 @@ const PostList = ({ items, navigation }) => {
               <View>
                 <Text style={styles.profileTitle}>{item.name}</Text>
                 <Text>
-                  {Moment(item.dateTime).format("MMM D, YYYY, h:mm A")}
+                  {Moment(item.datetime).format("MMM D, YYYY, h:mm A")}
                 </Text>
                 <Text>{item.location}</Text>
               </View>

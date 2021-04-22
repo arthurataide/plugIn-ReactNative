@@ -49,7 +49,7 @@ function App(props) {
             });
 
             //saving auth information (id and token)
-            await saveAuthInfo({ ...data, role: userInfo.role });
+            await saveAuthInfo(data);
           } else {
             //fail
             response.text().then((text) => Toast.showError(text));

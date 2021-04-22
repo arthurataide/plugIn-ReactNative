@@ -13,13 +13,25 @@ import FormInput from "../../../components/FormInput";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { postData } from "../../../backend/FetchData";
+import * as Toast from "../../../components/Toast";
+import { getAuthInfo } from "../../../backend/AuthStorage";
 
 const { width, height } = Dimensions.get("window");
 
-export default () => {
+export default ({ navigation }) => {
+  const [title, setTitle] = useState("");
+  const [address, setAddress] = useState("");
+  const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date());
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [activeSlide, setActiveSlide] = useState();
   const ref = useRef(null);
+
+  // useEffect(()=>{
+  //   getAuthInfo().then((user)=>console.log(user._id))
+  // },[])
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -27,17 +39,19 @@ export default () => {
   };
 
   const deleteImage = (index) => {
-    // console.log("delete: " + index)
-    // const newArray = dataImages;
-    // if (index > -1) {
-    //     newArray.splice(index, 1);
-    // }
-    // setActiveSlide(0);
-    // setDataImages([]);
-    // setDataImages(newArray);
-    // if(newArray.length == 0){
-    //     setDataImages([])
-    // }
+    console.log("delete: " + index);
+    const newArray = images;
+    if (index > -1) {
+      newArray.splice(index, 1);
+    }
+    setActiveSlide(0);
+
+    //setImages([]);
+    if (newArray.length == 0) {
+      setImages([]);
+    } else {
+      setImages(newArray);
+    }
   };
 
   const pickImage = async () => {
@@ -56,13 +70,8 @@ export default () => {
         base64string: "data:image/jpeg;base64," + result.base64,
       };
       let newArray = createImageArray(newImg);
-      //setDataImages([]);
-      // let tmpImages = images;
-      // tmpImages.push(newImg);
-      // //console.log(tmpImages)
-
-            setImages([]);
-            setImages(newArray);
+      setImages([]);
+      setImages(newArray);
     }
   };
 
@@ -73,31 +82,107 @@ export default () => {
     return image;
   };
 
-  useEffect(()=>{
-    console.log(images)
-  }, [images])
+  const saveData = async () => {
+    if(title.trim() == '' || address.trim() == '' || address.trim() == ''){
+      Toast.showError("Please complete all required fields!")
+      return;
+    }
 
-  // const renderItem = ({ item, index }) => {
-  //   return (
-  //     <View>
-  //       {console.log(item)}
-  //         <Image
-  //           style={{ height: 240, width: width - 40, borderRadius: 10 }}
-  //           source={{ uri: item.url }}
-  //         />
-  //       <TouchableOpacity
-  //         style={styles.trash}
-  //         onPress={() => deleteImage(index)}
-  //       >
-  //         <FontAwesome5 name={"trash"} size={20} color={theme.COLORS.PRIMARY} />
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // };
+    setLoading(true)
+    let uploadedImages = await uploadBatchImages();
+    await postEvents(uploadedImages)
+    setLoading(false)
+  };
+
+  const postEvents = async (uploadedImages)=>{
+    const user = await getAuthInfo()
+    console.log(user)
+
+    let media = []
+    uploadedImages.forEach((i) => {
+      if (i != undefined && i.status === 200) {
+        media.push({
+          type: "image",
+          url: i.data.url,
+        });
+      }
+    });
+
+    const newEvent = {
+      userId: user._id,
+      title,
+      datetime: date,
+      location: address,
+      description,
+      media
+    };
+    console.log(newEvent);
+
+    const response = await postData('/events/', newEvent);
+    if (response) {
+      //Error
+      if (response.status >= 400) {
+        response.text().then((text) => Toast.showError(text));
+        return;
+      }
+      if (response.status === 200) {
+        Toast.show("Category created successfully!")
+        // setReadyDataImages([])
+        // setLoading(false)
+        navigation.goBack()
+      }
+    }
+  }
+
+  const uploadBatchImages = async () => {
+    //setLoading(true)
+    console.log("HERE");
+
+    try {
+      //const urlArray = images.filter((x) => !x.base64string);
+      const newArray = images.filter((x) => x.base64string);
+      const promises = newArray.map((image) => uploadImage(image.base64string));
+      const resultUploadImage = await Promise.all(promises);
+      return resultUploadImage;
+      //await postProduct(resultUploadImage, urlArray);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      //setLoading(false)
+    }
+  };
+
+  const uploadImage = async (base64String) => {
+    try {
+      var tmpImage = {
+        folder: "events",
+        base64string: base64String,
+      };
+      const response = await postData("/storage/", tmpImage);
+      if (response) {
+        if (response.status == 200) {
+          const data = await response.json();
+          return {
+            status: response.status,
+            data,
+          };
+        } else {
+          const text = await response.text();
+          return {
+            status: response.status,
+            data: text,
+          };
+        }
+      }
+    } catch (error) {
+      //console.error("ERROR ", error)
+    }
+  };
 
   const renderItem = useCallback(
     ({ item, index }, parallaxProps) => (
       <View style={styles.card} key={index}>
+        {console.log(item.url)}
         <ParallaxImage
           source={{ uri: item.url }}
           containerStyle={styles.imageContainer}
@@ -106,7 +191,10 @@ export default () => {
           shouldComponentUpdate={true}
           {...parallaxProps}
         />
-        <TouchableOpacity style={styles.trash} onPress={() => deleteImg(index)}>
+        <TouchableOpacity
+          style={styles.trash}
+          onPress={() => deleteImage(index)}
+        >
           <FontAwesome5 name={"trash"} size={20} color={theme.COLORS.PRIMARY} />
         </TouchableOpacity>
       </View>
@@ -123,14 +211,14 @@ export default () => {
               ref={ref}
               data={images}
               extraData={images}
-              sliderWidth={width}
-              sliderHeight={width}
+              sliderWidth={width - 50}
+              sliderHeight={width - 50}
               itemWidth={width - 60}
               renderItem={renderItem}
               hasParallaxImages={true}
               enableMomentum={true}
               decelerationRate={0.9}
-              onSnapToItem={(index) => {}}
+              onSnapToItem={(index) => setActiveSlide(index)}
             />
             <TouchableOpacity style={styles.pickImg} onPress={pickImage}>
               <FontAwesome5
@@ -141,7 +229,12 @@ export default () => {
             </TouchableOpacity>
           </View>
 
-          <FormInput style={styles.inputText} placeholder={"Title"} />
+          <FormInput
+            value={title}
+            onChangeText={(text) => setTitle(text)}
+            style={styles.inputText}
+            placeholder={"Title"}
+          />
           <View style={styles.row}>
             <View style={styles.dateContainer}>
               <DateTimePicker
@@ -162,8 +255,15 @@ export default () => {
               />
             </View>
           </View>
-          <FormInput style={styles.inputText} placeholder={"Address"} />
           <FormInput
+            value={address}
+            onChangeText={(text) => setAddress(text)}
+            style={styles.inputText}
+            placeholder={"Address"}
+          />
+          <FormInput
+            value={description}
+            onChangeText={(text) => setDescription(text)}
             style={styles.inputText}
             placeholder={"Event Description"}
             multiline={true}
@@ -171,7 +271,7 @@ export default () => {
         </View>
       </ScrollView>
 
-      <Button title={"SAVE"} layout={"filled"} />
+      <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={() => saveData()} />
     </View>
   );
 };
@@ -224,5 +324,24 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+  },
+  card: {
+    width: width - 60,
+    height: 400,
+  },
+  imageContainer: {
+    flex: 1,
+    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+    backgroundColor: theme.COLORS.WHITE,
+    borderRadius: 8,
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: "cover",
+    //...StyleSheet.absoluteFillObject,
+    //resizeMode: "",
+    // width: 100,
+    // height: 100,
+    // backgroundColor: 'red',
   },
 });

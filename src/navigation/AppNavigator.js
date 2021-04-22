@@ -23,6 +23,7 @@ import RegisterScreen from "../screens/authentication/Register";
 import RegisterScreen2 from "../screens/authentication/RegisterInfo";
 import VacanciesScreen from "../screens/main/Vacancies";
 import NewEventScreen from "../screens/main/Event/NewEvent";
+import NewVacancyScreen from "../screens/main/Vacancy/NewVacancy";
 import CommentsScreen from "../screens/main/Post/Comments";
 import ProfileScreen from "../screens/main/Profile/Profile"
 
@@ -118,6 +119,11 @@ function App(props) {
             name="NewEvent"
             component={NewEventScreen}
             options={{...theme.HORIZONTAL_ANIMATION, title:"New Event"}}
+          />
+          <Stack.Screen
+            name="NewVacancy"
+            component={NewVacancyScreen}
+            options={{...theme.HORIZONTAL_ANIMATION, title:"New Vacancy"}}
           />
         </>
         ) : (

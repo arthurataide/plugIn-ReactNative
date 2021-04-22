@@ -234,6 +234,7 @@ export default ({ navigation }) => {
             onChangeText={(text) => setTitle(text)}
             style={styles.inputText}
             placeholder={"Title"}
+            autoFocus={true}
           />
           <View style={styles.row}>
             <View style={styles.dateContainer}>
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     borderWidth: 2,
-    borderColor: theme.COLORS.PRIMARY,
+    borderColor: theme.COLORS.TWITTER,
     borderRadius: 10,
     width: theme.SIZES.MAX_WIDTH / 2 - 10,
     padding: 10,

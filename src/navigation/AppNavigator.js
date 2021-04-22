@@ -5,9 +5,10 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import theme from "../theme";
 
-import { getAuthInfo, deleteAuthInfo } from "../backend/AuthStorage";
+import { deleteAuthInfo } from "../backend/AuthStorage";
 
 //Redux
 import { connect } from "react-redux";
@@ -24,7 +25,7 @@ import RegisterScreen2 from "../screens/authentication/RegisterInfo";
 import VacanciesScreen from "../screens/main/Vacancies";
 import NewEventScreen from "../screens/main/Event/NewEvent";
 import CommentsScreen from "../screens/main/Post/Comments";
-import ProfileScreen from "../screens/main/Profile/Profile"
+import ProfileScreen from "../screens/main/Profile/Profile";
 
 const Stack = createStackNavigator();
 
@@ -42,32 +43,36 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const headerRight = (props, navigation) => (
-  <View style={{ flexDirection: "row" }}>
-    <TouchableOpacity
-      onPress={() => navigation.navigate('Vacancies')}
-    >
-      <MaterialCommunityIcons
-        name={"account-multiple-plus"}
-        size={25}
-        color={theme.COLORS.PRIMARY}
-        style={{ marginRight: 10 }}
-      />
-    </TouchableOpacity>
-    <TouchableOpacity
-      onPress={() => deleteAuthInfo().then(() => props.deleteAuth())}
-    >
-      <Ionicons
-        name={"log-out-outline"}
-        size={25}
-        color={theme.COLORS.PRIMARY}
-        style={{ marginRight: 10 }}
-      />
-    </TouchableOpacity>
-  </View>
-);
+const headerRight = (props, navigation, route) => {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Home";
+  if (routeName == "Profile") {
+    return (
+      <TouchableOpacity
+        onPress={() => deleteAuthInfo().then(() => props.deleteAuth())}
+      >
+        <Ionicons
+          name={"log-out-outline"}
+          size={30}
+          color={theme.COLORS.PRIMARY}
+          style={{ marginRight: 15 }}
+        />
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate("Vacancies")}>
+        <MaterialCommunityIcons
+          name={"account-multiple-plus"}
+          size={30}
+          color={theme.COLORS.PRIMARY}
+          style={{ marginRight: 15 }}
+        />
+      </TouchableOpacity>
+    );
+  }
+};
 
-const tabStackOptions = (props, navigation) => {
+const tabStackOptions = (props, navigation, route) => {
   return {
     headerTitle: () => {
       return (
@@ -80,7 +85,7 @@ const tabStackOptions = (props, navigation) => {
         </View>
       );
     },
-    headerRight: () => headerRight(props, navigation),
+    headerRight: () => headerRight(props, navigation, route),
   };
 };
 
@@ -91,41 +96,37 @@ function App(props) {
       <Stack.Navigator
         headerMode={props.checkAuth.length > 0 ? "float" : "none"}
         mode="modal"
-        screenOptions={{headerTintColor: theme.COLORS.PRIMARY}}
+        screenOptions={{ headerTintColor: theme.COLORS.PRIMARY }}
       >
         {props.checkAuth.length > 0 ? (
-        <>
-          <Stack.Screen
-            name="Home"
-            component={TabNavigator}
-            options={({navigation}) => tabStackOptions(props, navigation)}
-          />
-          <Stack.Screen
-            name="Vacancies"
-            component={VacanciesScreen}
-          />
-          <Stack.Screen
-            name="Comments"
-            component={CommentsScreen}
-            options={theme.HORIZONTAL_ANIMATION}
-          />
-          <Stack.Screen
-            name="PageProfile"
-            component={ProfileScreen}
-            options={theme.HORIZONTAL_ANIMATION, {headerShown: false}}
-          />
-          <Stack.Screen
-            name="NewEvent"
-            component={NewEventScreen}
-            options={{...theme.HORIZONTAL_ANIMATION, title:"New Event"}}
-          />
-        </>
-        ) : (
           <>
             <Stack.Screen
-              name="SplashScreen"
-              component={SplashScreen}
+              name="Home"
+              component={TabNavigator}
+              options={({ navigation, route }) =>
+                tabStackOptions(props, navigation, route)
+              }
             />
+            <Stack.Screen name="Vacancies" component={VacanciesScreen} />
+            <Stack.Screen
+              name="Comments"
+              component={CommentsScreen}
+              options={theme.HORIZONTAL_ANIMATION}
+            />
+            <Stack.Screen
+              name="PageProfile"
+              component={ProfileScreen}
+              options={(theme.HORIZONTAL_ANIMATION, { headerShown: false })}
+            />
+            <Stack.Screen
+              name="NewEvent"
+              component={NewEventScreen}
+              options={{ ...theme.HORIZONTAL_ANIMATION, title: "New Event" }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen
               name="Signin"
               component={SignInScreen}

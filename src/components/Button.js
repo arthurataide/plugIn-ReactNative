@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   text: {
     alignSelf: "center",
-    color: theme.COLORS.INNER_TEXT,
+    color: theme.COLORS.PRIMARY,
     fontSize: 18,
     fontWeight: "600",
   },

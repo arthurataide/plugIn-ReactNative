@@ -16,15 +16,15 @@ export default ({ placeholder, multiline = false, value, onChangeText }) => (
 
 const styles = StyleSheet.create({
   inputContainer: {
-    borderWidth: 2,
-    borderColor: theme.COLORS.PRIMARY,
+    borderWidth: 1,
+    borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
     width: theme.SIZES.MAX_WIDTH,
     padding: 15,
     marginVertical: 8,
   },
   inputText: {
-    fontSize: 18,
+    fontSize: 16,
     color: theme.COLORS.INNER_TEXT,
   },
 });

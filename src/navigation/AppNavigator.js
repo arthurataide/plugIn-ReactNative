@@ -87,7 +87,7 @@ const tabStackOptions = (props, navigation) => {
 function App(props) {
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
       <Stack.Navigator
         headerMode={props.checkAuth.length > 0 ? "float" : "none"}
         mode="modal"

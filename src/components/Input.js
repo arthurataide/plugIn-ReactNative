@@ -19,6 +19,7 @@ const Input = ({
   numberOfLines,
   textInputStyle,
   value,
+  editable,
 }) => {
   const [inFocus, setInFocus] = useState(false);
 
@@ -45,6 +46,7 @@ const Input = ({
           onChangeText={onChangeText}
           value={value}
           style={textInputStyle}
+          editable={editable}
         />
       </View>
     </View>

@@ -33,7 +33,7 @@ const SIZES = {
   BASE: 16,
   FONT: 16,
   OPACITY: 0.8,
-  MAX_WIDTH: width - 24
+  MAX_WIDTH: width - 10
 };
 
 const FONT = {

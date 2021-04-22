@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Plugin",
-    "slug": "plugin",
+    "name": "Plug In",
+    "slug": "plug-in",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

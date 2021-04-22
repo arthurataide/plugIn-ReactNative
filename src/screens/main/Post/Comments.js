@@ -128,7 +128,7 @@ function App(props) {
   };
 
   const deleteComment = (id) => {
-    Alert.alert("Delete Post", "Are you sure you want to delete this post ?", [
+    Alert.alert("Delete Comment", "Are you sure you want to delete this comment ?", [
       {
         text: "No",
         style: "cancel",

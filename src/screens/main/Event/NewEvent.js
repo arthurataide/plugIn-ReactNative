@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import theme from "../../../theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Button from "../../../components/Button";
 import FormInput from "../../../components/FormInput";
 import Carousel, { ParallaxImage } from "react-native-snap-carousel";
@@ -83,22 +84,22 @@ export default ({ navigation }) => {
   };
 
   const saveData = async () => {
-    if(title.trim() == '' || address.trim() == '' || address.trim() == ''){
-      Toast.showError("Please complete all required fields!")
+    if (title.trim() == "" || address.trim() == "" || address.trim() == "") {
+      Toast.showError("Please complete all required fields!");
       return;
     }
 
-    setLoading(true)
+    setLoading(true);
     let uploadedImages = await uploadBatchImages();
-    await postEvents(uploadedImages)
-    setLoading(false)
+    await postEvents(uploadedImages);
+    setLoading(false);
   };
 
-  const postEvents = async (uploadedImages)=>{
-    const user = await getAuthInfo()
-    console.log(user)
+  const postEvents = async (uploadedImages) => {
+    const user = await getAuthInfo();
+    console.log(user);
 
-    let media = []
+    let media = [];
     uploadedImages.forEach((i) => {
       if (i != undefined && i.status === 200) {
         media.push({
@@ -114,11 +115,11 @@ export default ({ navigation }) => {
       datetime: date,
       location: address,
       description,
-      media
+      media,
     };
     console.log(newEvent);
 
-    const response = await postData('/events/', newEvent);
+    const response = await postData("/events/", newEvent);
     if (response) {
       //Error
       if (response.status >= 400) {
@@ -126,13 +127,13 @@ export default ({ navigation }) => {
         return;
       }
       if (response.status === 200) {
-        Toast.show("Category created successfully!")
+        Toast.show("Category created successfully!");
         // setReadyDataImages([])
         // setLoading(false)
-        navigation.goBack()
+        navigation.goBack();
       }
     }
-  }
+  };
 
   const uploadBatchImages = async () => {
     //setLoading(true)
@@ -204,7 +205,10 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.mainContainer}>
-      <ScrollView>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.mainContainer}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+      >
         <View style={styles.container}>
           <View style={{ height: 240 }}>
             <Carousel
@@ -270,9 +274,15 @@ export default ({ navigation }) => {
             multiline={true}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
-      <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={() => saveData()} />
+      <Button
+        loading={loading}
+        title={"SAVE"}
+        layout={"filled"}
+        onPress={() => saveData()}
+        marginBottom={30}
+      />
     </View>
   );
 };

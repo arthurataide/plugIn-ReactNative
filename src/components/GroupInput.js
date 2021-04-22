@@ -13,6 +13,7 @@ const GroupInput = ({
   renderItem,
   onChangeText,
   onSubmitEditing,
+  edit,
 }) => {
   const [flatListRef, setFlatListRef] = useState();
   return (
@@ -26,7 +27,7 @@ const GroupInput = ({
         data={data}
         extraData={data}
         renderItem={renderItem}
-        keyExtractor={(x) => `${x.id}`}
+        keyExtractor={edit ? (x) => `${x._id}` : (x) => `${x.id}`}
       />
       <SearchBar
         placeholder={placeholder}

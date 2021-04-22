@@ -13,8 +13,8 @@ const layoutTypes = {
     filled: "filled",
 }
 
-export default ({ title, onPress, loading = false, layout = layoutTypes.default }) => (
-  <View style={styles.container}>
+export default ({ title, onPress, loading = false, layout = layoutTypes.default,  marginBottom}) => (
+  <View style={[styles.container, {marginBottom: marginBottom}]}>
     <TouchableOpacity style={
         layout == layoutTypes.filled 
         ? styles.filledButton
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   text: {
     alignSelf: "center",
-    color: theme.COLORS.INNER_TEXT,
+    color: theme.COLORS.PRIMARY,
     fontSize: 18,
     fontWeight: "600",
   },

@@ -33,14 +33,14 @@ const PostList = ({ items, navigation }) => {
       <View>
         {item.type == "image" ? (
           <Image
-            style={{ height: 240, width: width - 40, borderRadius: 10 }}
+            style={{ height: 240, width: width - 22, borderRadius: 10 }}
             source={{ uri: item.url }}
           />
         ) : (
           <YoutubePlayer
             webViewStyle={{ borderRadius: 10 }}
             height={240}
-            width={width - 40}
+            width={width - 22}
             play={false}
             videoId={getVideoId(item.url)}
           />
@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
     borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 5,
     marginVertical: 3,
-    width: width - 24,
   },
   profilePostContainer: {
     flexDirection: "row",

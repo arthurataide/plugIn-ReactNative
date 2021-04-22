@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     
   },
   inputText: {
-    fontSize: 18,
+    fontSize: 16,
     color: theme.COLORS.INNER_TEXT,
   },
 });

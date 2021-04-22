@@ -7,7 +7,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { getAuthInfo } from "../../backend/AuthStorage";
 import { getData } from "../../backend/FetchData";
@@ -42,29 +42,38 @@ export default ({ navigation }) => {
     });
   }, [navigation]);
 
-  const CardItem = ({ item }) => (
-    <View style={{ alignItems: "center" }}>
-      <View style={styles.cardContainer}>
-        <Image style={styles.cardImage} source={{ uri: item.pictureUrl }} />
-        <View style={{ marginStart: 10 }}>
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.cardSubTitle}>{item.name}</Text>
-          <Text style={styles.cardDescription} numberOfLines={2}>
-            {item.description}
-          </Text>
-        </View>
+  const VacancyList = ({ items }) => {
+    return (
+      <>
+        {items.map((item, key) => (
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.cardContainer}>
+              <Image
+                style={styles.cardImage}
+                source={{ uri: item.pictureUrl }}
+              />
+              <View style={{ marginStart: 10 }}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.cardSubTitle}>{item.name}</Text>
+                <Text style={styles.cardDescription} numberOfLines={2}>
+                  {item.description}
+                </Text>
+              </View>
 
-        {user.role == "band" ? (
-          <TouchableOpacity style={styles.cardButton}>
-            <Text style={styles.cardButtonText}>Apply</Text>
-          </TouchableOpacity>
-        ) : (
-          <></>
-        )}
-      </View>
-      <Divider />
-    </View>
-  );
+              {user.role == "band" ? (
+                <TouchableOpacity style={styles.cardButton}>
+                  <Text style={styles.cardButtonText}>Apply</Text>
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+            </View>
+            <Divider />
+          </View>
+        ))}
+      </>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -73,8 +82,8 @@ export default ({ navigation }) => {
           <Button
             title={"New Vacancy 🥁 "}
             onPress={() => navigation.navigate("NewVacancy")}
+            marginBottom={10}
           />
-          <Divider />
         </>
       ) : (
         <></>
@@ -83,15 +92,8 @@ export default ({ navigation }) => {
       {loading ? (
         <ActivityIndicator color={theme.COLORS.PRIMARY} size={"large"} />
       ) : (
-        <FlatList
-            style={styles.list}
-            data={vacancies}
-            keyExtractor={(x) => x._id}
-            renderItem={({ item }) => <CardItem item={item} />}
-        />
+          <VacancyList items={vacancies} />
       )}
-
-      
     </View>
   );
 };
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   list: {
     alignSelf: "stretch",

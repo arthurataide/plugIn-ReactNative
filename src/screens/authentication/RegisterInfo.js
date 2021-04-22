@@ -225,6 +225,7 @@ function App(props) {
           setGenres(tmpArray);
           setGenreString("");
         }
+        return
       }
       case "Instruments": {
         if (instrumentString != "") {
@@ -237,6 +238,7 @@ function App(props) {
           setInstruments(tmpArray);
           setInstrumentString("");
         }
+        return
       }
       case "Skills": {
         if (skillString != "") {
@@ -246,6 +248,7 @@ function App(props) {
           setSkills(tmpArray);
           setSkillString("");
         }
+        return
       }
     }
   };
@@ -254,28 +257,34 @@ function App(props) {
     let array = [];
     switch (type) {
       case "Genre": {
+        console.log("Genre Deleted")
         if (genres.length > 1) {
           array = genres.filter((x) => x.id != id);
           setGenres(array);
         } else if (genres.length == 1) {
           setGenres([]);
         }
+        return
       }
       case "Instruments": {
+        console.log("Instruments Deleted")
         if (instruments.length > 1) {
           array = instruments.filter((x) => x.id != id);
           setInstruments(array);
         } else if (instruments.length == 1) {
           setInstruments([]);
         }
+        return
       }
       case "Skills": {
+        console.log("Skills Deleted")
         if (skills.length > 1) {
           array = skills.filter((x) => x.id != id);
           setSkills(array);
         } else if (skills.length == 1) {
           setSkills([]);
         }
+        return
       }
     }
   };

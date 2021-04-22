@@ -55,7 +55,7 @@ function App(props) {
       </View>
 
       <ScrollView style={styles.informationContainer}>
-        <Text style={styles.profileName}>{profile.name}</Text>
+        <Text style={styles.profileName}>{profile.title}</Text>
         <View style={styles.aboutContainer}>
           <Text style={{ justifyContent: "space-evenly" }}>
             {profile.about}

@@ -44,7 +44,6 @@ export default ({ navigation })=>{
                 ? 
                 <>
                     <Button title={"New Event 🎸 "} onPress={()=>navigation.navigate("NewEvent")} />
-                    <Divider/>
                 </>
                 :<></>
             }
@@ -62,9 +61,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#fff",
-      alignItems: "center",
-      justifyContent: "flex-start",
       paddingTop: 8,
-      paddingHorizontal:12
+      paddingHorizontal:5
     },
 });

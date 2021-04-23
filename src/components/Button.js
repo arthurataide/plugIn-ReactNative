@@ -13,7 +13,7 @@ const layoutTypes = {
     filled: "filled",
 }
 
-export default ({ title, onPress, loading = false, layout = layoutTypes.default,  marginBottom, small = false}) => (
+export default ({ title, onPress, loading = false, layout = layoutTypes.default,  marginBottom, small = false, color}) => (
   <View style={[styles.container, {marginBottom: marginBottom}]}>
     <TouchableOpacity style={
         [
@@ -24,6 +24,10 @@ export default ({ title, onPress, loading = false, layout = layoutTypes.default,
         small
         ? styles.small
         : styles.large,
+        
+        color 
+        ? {backgroundColor:color}
+        : {}
       ]
     } onPress={onPress}>
 

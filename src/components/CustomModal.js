@@ -13,7 +13,7 @@ import {
 import theme from "../theme";
 import Button from "./Button";
 
-export default ({ visible, children, title, onCancel, onSave, animation, loading }) => {
+export default ({ visible, children, title, onCancel, onSave, onSecondaryPress, animation, loading, saveText="SAVE", secondaryText }) => {
   return (
     <>
       <Modal visible={visible} animationType={animation ? "slide" : "fade"} transparent={true} statusBarTranslucent={true} onRequestClose={visible}>
@@ -25,10 +25,16 @@ export default ({ visible, children, title, onCancel, onSave, animation, loading
                 <View style={styles.divider} />
                   {children}
                 <View style={styles.modalButton}>
-                  {/* <TouchableOpacity onPress={onSave} style={styles.button}>
-                    <Text style={styles.buttonText}>SAVE</Text>
-                  </TouchableOpacity> */}
-                  <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={onSave} />
+                  {secondaryText
+                  ? 
+                   <View style={{ flexDirection: "row", justifyContent:'space-between' }} >
+                      <Button loading={loading} title={secondaryText} layout={"filled"} onPress={onSecondaryPress} small={true} color={"red"} />
+                      <Button loading={loading} title={saveText} layout={"filled"} onPress={onSave} small={true}/>
+                   </View>
+                  :
+                  <Button loading={loading} title={saveText} layout={"filled"} onPress={onSave} />
+                }
+                  
                 </View>
             </View>
           </TouchableWithoutFeedback>

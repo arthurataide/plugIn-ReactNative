@@ -17,11 +17,6 @@ import CustomModal from "../../components/CustomModal";
 import FormInput from "../../components/FormInput";
 import * as Toast from "../../components/Toast";
 
-//const img = require("./blink.jpeg");
-//import img from "./blink.jpeg";
-
-const { width } = Dimensions.get("window");
-
 export default ({ navigation }) => {
   const [vacancies, setVacancies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -102,10 +97,12 @@ export default ({ navigation }) => {
         {items.map((item, key) => (
           <View key={key} style={{ alignItems: "center" }}>
             <View style={styles.cardContainer}>
-              <Image
-                style={styles.cardImage}
-                source={{ uri: item.pictureUrl }}
-              />
+                <TouchableOpacity onPress={() => navigation.navigate("PageProfile", {userId: item.bandId})}>
+                    <Image
+                    style={styles.cardImage}
+                    source={{ uri: item.pictureUrl }}
+                    />
+                </TouchableOpacity>
               <View style={{ marginStart: 10 }}>
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 <Text style={styles.cardSubTitle}>{item.name}</Text>
@@ -242,12 +239,13 @@ const styles = StyleSheet.create({
     top: 25,
     right: 10,
     padding: 3,
-    // borderRadius: 5,
-    // borderWidth: 1,
-    // borderColor: theme.COLORS.PRIMARY,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: theme.COLORS.PRIMARY,
   },
   cardButtonText: {
     color: theme.COLORS.PRIMARY,
     fontSize: 18,
+    textAlign: "center"
   },
 });

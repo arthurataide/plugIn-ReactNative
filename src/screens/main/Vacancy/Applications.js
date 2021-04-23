@@ -7,12 +7,12 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView
 } from "react-native";
 import { getAuthInfo } from "../../../backend/AuthStorage";
-import { getData, postData } from "../../../backend/FetchData";
+import { getData, postData, updateData } from "../../../backend/FetchData";
 import theme from "../../../theme";
 import Divider from "../../../components/Divider";
-import Button from "../../../components/Button";
 import CustomModal from "../../../components/CustomModal";
 import FormInput from "../../../components/FormInput";
 import * as Toast from "../../../components/Toast";
@@ -23,25 +23,22 @@ import * as Toast from "../../../components/Toast";
 const { width } = Dimensions.get("window");
 
 export default ({ navigation }) => {
-  const [vacancies, setVacancies] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [applicationLoading, setApplicationLoading] = useState(false);
   const [user, setUser] = useState([]);
   const [modalVisibility, setModalVisibility] = useState(false);
-  const [applicationDescription, setApplicationDescription] = useState("");
-  const [vacancy, setVacancy] = useState({});
+  const [applicationIndex, setApplicationIndex] = useState(-1);
+  const [profileProperty, setProfileProperty] = useState("");
 
   const loadData = async (loggedUser) => {
     setLoading(true);
 
-    console.log(loggedUser)
-    const role = loggedUser.role
-    
+    const role = loggedUser.role    
     const path = `/vacancies/applications-by-${role === "musician" ? "applicant" : "band"}/${loggedUser._id}`
-    console.log(path)
     let data = await getData(path);
-    console.log(data)
-    setVacancies(data);
+    setApplications(data);
+
     setLoading(false);
   };
 
@@ -49,6 +46,13 @@ export default ({ navigation }) => {
     getAuthInfo().then((x) => {
       setUser(x);
       loadData(x);
+
+      if (x.role == "band"){
+        setProfileProperty("applicantId")
+      }else if (x.role == "musician"){
+        setProfileProperty("bandId")
+      }
+      
     });
   }, []);
 
@@ -61,24 +65,27 @@ export default ({ navigation }) => {
     });
   }, [navigation]);
 
-  const submitApplication = async () => {
-    setApplicationLoading(true);
+  const changeApplicationStatus = async (status) => {
+    //setApplicationLoading(true);
 
-    const vacancyApplication = {
-      vacancyId: vacancy._id,
-      title: vacancy.title,
-      applicantId: user._id,
-      description: applicationDescription,
-      status: "pending",
+    const updatedVacancyApplication = {
+       ...applications[applicationIndex], 
+       status
     };
-    console.log(vacancyApplication);
+     console.log(updatedVacancyApplication);
 
-    const response = await postData(
-      "/vacancies/applications/",
-      vacancyApplication
+    const path = "/vacancies/applications/" + updatedVacancyApplication._id;
+    console.log(path)
+
+    const response = await updateData(
+      path,
+      updatedVacancyApplication
     );
+    
+    //
     if (response) {
       //Error
+      console.log(response.status)
       if (response.status >= 400) {
         response.text().then((text) => {
           console.log(text);
@@ -86,13 +93,12 @@ export default ({ navigation }) => {
         });
       }
 
-      if (response.status === 200) {
-        Toast.show("Category created successfully!");
+      if (response.status >= 200 && response.status <= 300) {
+        Toast.show("Application updated successfully!");
+        loadData(user)
       }
     }
 
-    setApplicationLoading(false);
-    setApplicationDescription("");
     setModalVisibility(false);
   };
 
@@ -100,40 +106,52 @@ export default ({ navigation }) => {
     setModalVisibility(false);
   };
 
-  const applyForVacancy = (vacancy) => {
-    setVacancy(vacancy);
-    setModalVisibility(true);
+  const getStatusColor = (status) => {
+    let color;
+
+    switch (status){
+        case "rejected":
+            color = "red"
+            break;
+        case "approved":
+            color = theme.COLORS.PRIMARY
+            break;
+        default:
+            color = theme.COLORS.LIGHTGRAY
+        
+    }
+
+    return color;
   };
 
-  const VacancyList = ({ items }) => {
+  const ApplicationList = ({ items }) => {
     return (
       <>
         {items.map((item, key) => (
-          <View key={key} style={{ alignItems: "center" }}>
+          <View key={key} style={{ alignItems: "center" }} >
             <View style={styles.cardContainer}>
-              <Image
-                style={styles.cardImage}
-                source={{ uri: item.pictureUrl }}
-              />
-              <View style={{ marginStart: 10 }}>
+                <TouchableOpacity onPress={() => navigation.navigate("PageProfile", {userId: item[profileProperty]})}>
+                    <Image
+                    style={styles.cardImage}
+                    source={{ uri: item.pictureUrl }}
+                    />
+                </TouchableOpacity>
+              
+              <View style={{ marginStart: 10 }}  >
+
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 <Text style={styles.cardSubTitle}>{item.name}</Text>
                 <Text style={styles.cardDescription} numberOfLines={2}>
                   {item.description}
                 </Text>
               </View>
-              {/* <View style={{width: 20, height:90, backgroundColor:theme.COLORS.PRIMARY, position:"absolute", top:0, right:0}}/> */}
-
-              {/* {user.role == "band" ? (
-                <TouchableOpacity
-                  style={styles.cardButton}
-                  onPress={() => applyForVacancy(item)}
-                >
-                  <Text style={styles.cardButtonText}>Apply</Text>
-                </TouchableOpacity>
-              ) : (
-                <></>
-              )} */}
+                
+              <TouchableOpacity onPress={() => {
+                  if (user.role === "band"){
+                    setApplicationIndex(key)
+                    setModalVisibility(true)
+                  }
+                }} style={[styles.cardStatus, { backgroundColor: getStatusColor(item.status) }]}/>
             </View>
             <Divider />
           </View>
@@ -144,33 +162,8 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {user.role == "band" ? (
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: theme.SIZES.MAX_WIDTH,
-            marginTop: 10,
-          }}
-        >
-          <Button
-            title={"New Vacancy"}
-            onPress={() => navigation.navigate("NewVacancy")}
-            marginBottom={5}
-            small={true}
-          />
-          <Button
-            title={"Applications"}
-            onPress={() => navigation.navigate("Applications")}
-            marginBottom={5}
-            small={true}
-          />
-        </View>
-      ) : (
-        <></>
-      )}
-
-      {loading ? (
+    <ScrollView onScrollEndDrag = {()=>loadData(user)} >
+    {loading ? (
         <ActivityIndicator color={theme.COLORS.PRIMARY} size={"large"} />
       ) : (
         <>
@@ -178,20 +171,18 @@ export default ({ navigation }) => {
             title={"APPLICATION"}
             visible={modalVisibility}
             onCancel={() => hideModal()}
-            onSave={() => submitApplication()}
+            onSave={() => changeApplicationStatus("approved")}
             loading={applicationLoading}
-          >
-            <FormInput
-              value={applicationDescription}
-              onChangeText={(text) => setApplicationDescription(text)}
-              placeholder={"Description"}
-              autoFocus={true}
+            saveText="APPROVE"
+            secondaryText="REJECT"
+            onSecondaryPress={()=>changeApplicationStatus("rejected")}
             />
-          </CustomModal>
+            
 
-          <VacancyList items={vacancies} />
+          <ApplicationList items={applications} />
         </>
       )}
+    </ScrollView>
     </View>
   );
 };
@@ -242,7 +233,14 @@ const styles = StyleSheet.create({
     padding: 3,
   },
   cardButtonText: {
-    color: theme.COLORS.PRIMARY,
     fontSize: 18,
   },
+  cardStatus:{
+      borderRadius:50, 
+      width: 20, 
+      height:20, 
+      position:"absolute", 
+      top:10, 
+      right:10
+ }
 });

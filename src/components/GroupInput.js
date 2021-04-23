@@ -14,13 +14,19 @@ const GroupInput = ({
   onChangeText,
   onSubmitEditing,
   edit,
+  flatListVertical,
 }) => {
   const [flatListRef, setFlatListRef] = useState();
+  if(flatListVertical == undefined){
+    flatListVertical = false
+  }
+
   return (
     <View style={styles.viewContainer}>
       <FlatList
         ref={(ref) => setFlatListRef(ref)}
-        horizontal
+        horizontal={flatListVertical ? false : true}
+        scrollEnabled={flatListVertical ? false : true}
         showsHorizontalScrollIndicator={false}
         onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
         onLayout={() => flatListRef.scrollToEnd({ animated: true })}
@@ -29,6 +35,7 @@ const GroupInput = ({
         renderItem={renderItem}
         keyExtractor={edit ? (x) => `${x._id}` : (x) => `${x.id}`}
       />
+
       <SearchBar
         placeholder={placeholder}
         onChangeText={onChangeText}
@@ -38,11 +45,13 @@ const GroupInput = ({
         inputStyle={styles.searchBarInputStyle}
         placeholderTextColor="rgba(0,0,0, 0.2)"
         searchIcon={() => {
-            if(iconFontAwesome5){
-                return <FontAwesome5 name={iconFontAwesome5} size={22} color="#555" />;
-            } else { 
-                return <Ionicons name={icon} size={22} color="#555" />;
-            }
+          if (iconFontAwesome5) {
+            return (
+              <FontAwesome5 name={iconFontAwesome5} size={22} color="#555" />
+            );
+          } else {
+            return <Ionicons name={icon} size={22} color="#555" />;
+          }
         }}
         onSubmitEditing={onSubmitEditing}
         onBlur={onSubmitEditing}

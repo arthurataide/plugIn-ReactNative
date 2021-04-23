@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
-    width: theme.SIZES.MAX_WIDTH,
     padding: 15,
     marginVertical: 8,
   },

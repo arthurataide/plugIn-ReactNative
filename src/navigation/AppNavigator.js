@@ -7,7 +7,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import theme from "../theme";
-
 import { deleteAuthInfo } from "../backend/AuthStorage";
 
 //Redux

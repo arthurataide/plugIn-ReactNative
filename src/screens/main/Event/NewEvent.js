@@ -215,9 +215,9 @@ export default ({ navigation }) => {
               ref={ref}
               data={images}
               extraData={images}
-              sliderWidth={width - 50}
-              sliderHeight={width - 50}
-              itemWidth={width - 60}
+              sliderWidth={width}
+              sliderHeight={width}
+              itemWidth={width - 10}
               renderItem={renderItem}
               hasParallaxImages={true}
               enableMomentum={true}
@@ -242,11 +242,10 @@ export default ({ navigation }) => {
           <View style={styles.row}>
             <View style={styles.dateContainer}>
               <DateTimePicker
-                style={{ width: theme.SIZES.MAX_WIDTH / 2 - 20 }}
                 testID="dateTimePicker"
                 value={date}
                 mode={"date"}
-                onChange={onChange}
+                onChange={() => onChange()}
               />
             </View>
             <View style={styles.dateContainer}>
@@ -255,7 +254,7 @@ export default ({ navigation }) => {
                 value={date}
                 mode={"time"}
                 is24Hour={true}
-                onChange={onChange}
+                onChange={() => onChange}
               />
             </View>
           </View>
@@ -272,15 +271,14 @@ export default ({ navigation }) => {
             placeholder={"Event Description"}
             multiline={true}
           />
+          <Button
+            loading={loading}
+            title={"SAVE"}
+            layout={"filled"}
+            onPress={() => saveData()}
+          />
         </View>
       </KeyboardAwareScrollView>
-
-      <Button
-        loading={loading}
-        title={"SAVE"}
-        layout={"filled"}
-        onPress={() => saveData()}
-      />
     </View>
   );
 };
@@ -289,26 +287,17 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: theme.COLORS.WHITE,
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-  container: {
-    // flex: 1,
-    // backgroundColor: "black",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    height: height - 190,
+    padding: 5,
   },
   dateContainer: {
     borderWidth: 1,
     borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
-    width: theme.SIZES.MAX_WIDTH / 2 - 10,
+    width: "49%",
     padding: 10,
     marginVertical: 2,
   },
   row: {
-    width: theme.SIZES.MAX_WIDTH,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -335,8 +324,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    width: width - 60,
-    height: 400,
+    width: width - 30,
+    height: 240,
   },
   imageContainer: {
     flex: 1,

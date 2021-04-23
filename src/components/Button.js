@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: "center",
-    width: theme.SIZES.MAX_WIDTH,
     borderWidth: 1.5,
     borderColor: theme.COLORS.PRIMARY,
   },
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: "center",
-    width: theme.SIZES.MAX_WIDTH,
     backgroundColor: theme.COLORS.PRIMARY,
   },
   text: {

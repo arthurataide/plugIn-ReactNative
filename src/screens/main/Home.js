@@ -35,7 +35,7 @@ const ProfileItem = ({ item, navigation }) => (
   </TouchableOpacity>
 );
 
-export default function App(props) {
+export default function App(props, {navigation, route}) {
   const [posts, setPosts] = useState([]);
   const [userProfiles, setUserProfiles] = useState([]);
   let [loading, setLoading] = useState(false);
@@ -43,6 +43,14 @@ export default function App(props) {
   //Get data
   useEffect(() => {
     onRefresh();
+  }, []);
+
+  useEffect(() => {
+    //console.log(props.navigation)
+    props.navigation.addListener('focus', () => {
+      console.log("Focus - Home")
+      onRefresh()
+    })
   }, []);
 
   const onRefresh = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -8,8 +8,10 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Platform,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useScrollToTop } from "@react-navigation/native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import GroupInput from "../../components/GroupInput";
@@ -43,13 +45,23 @@ function App(props) {
   const [instruments, setInstruments] = useState([]);
   const [instrumentString, setInstrumentString] = useState("");
 
+  const [scrollRef, setScrollRef] = useState(null);
+
   useEffect(() => {
     onRefresh();
   }, [props.checkAuth]);
 
   useEffect(() => {
     props.navigation.addListener("focus", () => {
+      console.log("Focus - Profile");
       onRefresh();
+      if (scrollRef != null) {
+        if (Platform == "android") {
+          scrollRef.scrollTo({ x: 0, y: 0, animated: true });
+        } else {
+          scrollRef.scrollTo({ x: 0, y: 0, animated: false });
+        }
+      }
     });
   }, [props.navigation]);
 
@@ -59,7 +71,7 @@ function App(props) {
       getAuthInfo().then((x) => {
         //console.log(x);
         setRole(x.role);
-        getData("/auth/user-info/" + x._id).then(data => {
+        getData("/auth/user-info/" + x._id).then((data) => {
           setPicture({ url: data.pictureUrl });
           setFName(data.name);
           setEmail(data.username);
@@ -70,9 +82,8 @@ function App(props) {
           setGenres(data.genres);
           setInstruments(data.instruments);
           setLoading(false);
-        })
+        });
       });
-      
     }
   };
 
@@ -279,6 +290,8 @@ function App(props) {
         scrollEnabled={false}
       >
         <ScrollView
+          ref={(ref) => setScrollRef(ref)}
+          scrollsToTop={true}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={onRefresh} />
           }

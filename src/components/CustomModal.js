@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 20,
     paddingVertical: 25,
     paddingHorizontal: 10,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -77,7 +76,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalButton: {
-    width: Dimensions.get('window').width - 15,
     marginVertical:20,
   },
   button:{

@@ -75,6 +75,7 @@ const headerRight = (props, navigation, route) => {
 
 const tabStackOptions = (props, navigation, route) => {
   return {
+    headerBackTitleVisible: false,
     headerTitle: () => {
       return (
         <View style={{ flexDirection: "row" }}>
@@ -87,6 +88,7 @@ const tabStackOptions = (props, navigation, route) => {
       );
     },
     headerRight: () => headerRight(props, navigation, route),
+    
   };
 };
 

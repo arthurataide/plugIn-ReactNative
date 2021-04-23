@@ -118,7 +118,6 @@ export default ({ navigation }) => {
             break;
         default:
             color = theme.COLORS.LIGHTGRAY
-        
     }
 
     return color;

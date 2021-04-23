@@ -73,7 +73,7 @@ export default ({ navigation }) => {
       }
 
       if (response.status === 200) {
-        Toast.show("Category created successfully!");
+        Toast.show("Application sent successfully!");
       }
     }
 
@@ -97,12 +97,16 @@ export default ({ navigation }) => {
         {items.map((item, key) => (
           <View key={key} style={{ alignItems: "center" }}>
             <View style={styles.cardContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate("PageProfile", {userId: item.bandId})}>
-                    <Image
-                    style={styles.cardImage}
-                    source={{ uri: item.pictureUrl }}
-                    />
-                </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("PageProfile", { userId: item.bandId })
+                }
+              >
+                <Image
+                  style={styles.cardImage}
+                  source={{ uri: item.pictureUrl }}
+                />
+              </TouchableOpacity>
               <View style={{ marginStart: 10 }}>
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 <Text style={styles.cardSubTitle}>{item.name}</Text>
@@ -177,7 +181,13 @@ export default ({ navigation }) => {
             title={"APPLICATION"}
             visible={modalVisibility}
             onCancel={() => hideModal()}
-            onSave={() => submitApplication()}
+            onSave={() => {
+              if (applicationDescription != "") {
+                submitApplication();
+              } else {
+                Toast.showError("Description is required ! ");
+              }
+            }}
             loading={applicationLoading}
           >
             <FormInput
@@ -201,6 +211,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "flex-start",
+    paddingVertical: 10,
   },
   list: {
     alignSelf: "stretch",
@@ -223,12 +234,13 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 19,
-    color: theme.COLORS.INNER_TEXT,
-    fontWeight: "500",
+    color: theme.COLORS.BLACK,
+    fontWeight: "bold",
   },
   cardSubTitle: {
-    fontSize: 17,
-    color: theme.COLORS.BLACK,
+    fontSize: 15,
+    fontWeight: "bold",
+    color: theme.COLORS.INNER_TEXT,
   },
   cardDescription: {
     fontStyle: "italic",
@@ -246,6 +258,6 @@ const styles = StyleSheet.create({
   cardButtonText: {
     color: theme.COLORS.PRIMARY,
     fontSize: 18,
-    textAlign: "center"
+    textAlign: "center",
   },
 });

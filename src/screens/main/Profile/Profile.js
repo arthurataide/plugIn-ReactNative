@@ -118,13 +118,11 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.PRIMARY,
   },
   imageContainer: {
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: theme.COLORS.PRIMARY,
   },
   profileImg: {
     height: 300,
     width: width,
+    borderRadius: 5
   },
   informationContainer: {
     paddingHorizontal: 10,

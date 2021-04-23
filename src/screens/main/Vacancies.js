@@ -135,6 +135,7 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {console.log(user.role)}
       {user.role == "band" ? (
         <View
           style={{

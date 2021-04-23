@@ -157,7 +157,7 @@ function App(props) {
             props.setAuth(dataInfo);
           });
           //saving auth information (id and token)
-          await saveAuthInfo({ ...data, role: userInfo.role });
+          await saveAuthInfo(data);
 
           setLoading(false);
         } else {

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  SafeAreaView,
+  Linking,
   ScrollView,
 } from "react-native";
 import { getData } from "../../../backend/FetchData";
@@ -79,9 +79,9 @@ function App(props) {
       </ScrollView>
       <TouchableOpacity
         style={styles.contactBtn}
-        onPress={() => console.log("contact")}
+        onPress={() => Linking.openURL('mailto:'+ profile.username+ '?subject=Application at PlugIn.')}
       >
-        <FontAwesome5 name="phone" color={theme.COLORS.WHITE} size={20} />
+        <Ionicons name="mail" color={theme.COLORS.WHITE} size={20} />
         <Text style={{fontSize: 17, marginLeft: 10, color: theme.COLORS.WHITE}}>Contact</Text>
       </TouchableOpacity>
       <TouchableOpacity

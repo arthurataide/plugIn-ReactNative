@@ -27,6 +27,7 @@ import NewEventScreen from "../screens/main/Event/NewEvent";
 import NewVacancyScreen from "../screens/main/Vacancy/NewVacancy";
 import CommentsScreen from "../screens/main/Post/Comments";
 import ProfileScreen from "../screens/main/Profile/Profile";
+import ApplicationsScreen from "../screens/main/Vacancy/Applications";
 
 const Stack = createStackNavigator();
 
@@ -127,7 +128,11 @@ function App(props) {
             <Stack.Screen
               name="NewVacancy"
               component={NewVacancyScreen}
-              options={{...theme.HORIZONTAL_ANIMATION, title:"New Vacancy"}}
+              options={{...theme.HORIZONTAL_ANIMATION, title:"New Vacancy"}}/>
+            <Stack.Screen
+              name="Applications"
+              component={ApplicationsScreen}
+              options={{...theme.HORIZONTAL_ANIMATION, title:"Applications"}}
           />
           </>
         ) : (

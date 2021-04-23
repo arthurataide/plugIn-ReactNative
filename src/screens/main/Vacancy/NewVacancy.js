@@ -77,7 +77,7 @@ export default ({ navigation }) => {
         </View>
       </ScrollView>
 
-      <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={() => saveData()} />
+      <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={() => saveData()} marginBottom = {30} />
     </View>
   );
 };

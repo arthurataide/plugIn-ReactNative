@@ -13,21 +13,28 @@ const layoutTypes = {
     filled: "filled",
 }
 
-export default ({ title, onPress, loading = false, layout = layoutTypes.default,  marginBottom}) => (
+export default ({ title, onPress, loading = false, layout = layoutTypes.default,  marginBottom, small = false}) => (
   <View style={[styles.container, {marginBottom: marginBottom}]}>
     <TouchableOpacity style={
-        layout == layoutTypes.filled 
+        [
+          layout == layoutTypes.filled 
         ? styles.filledButton
-        : styles.button
+        : styles.button,
+
+        small
+        ? styles.small
+        : styles.large,
+      ]
     } onPress={onPress}>
 
     { loading 
     ? <ActivityIndicator color={ layout == layoutTypes.filled ? theme.COLORS.WHITE : theme.COLORS.PRIMARY } />
     :
-    <Text style={
+    <Text style={[
         layout == layoutTypes.filled 
         ? styles.filledText
         : styles.text
+    ]
     }>{title}</Text>
     }
     
@@ -42,7 +49,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: "center",
-    width: theme.SIZES.MAX_WIDTH,
     borderWidth: 1.5,
     borderColor: theme.COLORS.PRIMARY,
   },
@@ -51,7 +57,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     alignItems: "center",
-    width: theme.SIZES.MAX_WIDTH,
     backgroundColor: theme.COLORS.PRIMARY,
   },
   text: {
@@ -66,4 +71,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
   },
+  large:{
+    width: theme.SIZES.MAX_WIDTH,
+  },
+  small:{
+    width: ( theme.SIZES.MAX_WIDTH / 2 ) - 10,
+  }
 });

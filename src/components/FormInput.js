@@ -9,14 +9,14 @@ export default ({
   value,
   onChangeText,
 }) => {
-  const [borderColor, setBorderColor] = useState(theme.COLORS.TWITTER)
+  const [borderColor, setBorderColor] = useState(theme.COLORS.LIGHTGRAY)
 
   const onFocus = () =>{
     setBorderColor(theme.COLORS.PRIMARY)
   }
 
   const onBlur = () =>{
-    setBorderColor(theme.COLORS.TWITTER)
+    setBorderColor(theme.COLORS.LIGHTGRAY)
   }
 
   return (

@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     borderWidth: 2,
-    borderColor: theme.COLORS.TWITTER,
+    borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
     width: theme.SIZES.MAX_WIDTH / 2 - 10,
     padding: 10,
@@ -349,10 +349,5 @@ const styles = StyleSheet.create({
   image: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: "cover",
-    //...StyleSheet.absoluteFillObject,
-    //resizeMode: "",
-    // width: 100,
-    // height: 100,
-    // backgroundColor: 'red',
   },
 });

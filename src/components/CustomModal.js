@@ -11,9 +11,9 @@ import {
   Keyboard,
 } from "react-native";
 import theme from "../theme";
+import Button from "./Button";
 
-export default ({ visible, children, title, onCancel, onSave, animation }) => {
-  
+export default ({ visible, children, title, onCancel, onSave, animation, loading }) => {
   return (
     <>
       <Modal visible={visible} animationType={animation ? "slide" : "fade"} transparent={true} statusBarTranslucent={true} onRequestClose={visible}>
@@ -25,9 +25,10 @@ export default ({ visible, children, title, onCancel, onSave, animation }) => {
                 <View style={styles.divider} />
                   {children}
                 <View style={styles.modalButton}>
-                  <TouchableOpacity onPress={onSave} style={styles.button}>
+                  {/* <TouchableOpacity onPress={onSave} style={styles.button}>
                     <Text style={styles.buttonText}>SAVE</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                  <Button loading={loading} title={"SAVE"} layout={"filled"} onPress={onSave} />
                 </View>
             </View>
           </TouchableWithoutFeedback>

@@ -14,13 +14,12 @@ function App(props) {
   const checkAuthExists = async () => {
     let res = getAuthInfo();
     res.then((data) => {
-      console.log(data);
+      //console.log(data);
       if (data) {
         const userInfo = getData("/auth/user-info/" + data._id);
-        userInfo.then((data) => {
-            props.setAuth(data);
+        userInfo.then((userInfo) => {
+            props.setAuth(userInfo);
         })
-        
       } else {
         props.navigation.navigate("Signin");
       }

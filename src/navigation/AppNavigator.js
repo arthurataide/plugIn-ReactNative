@@ -7,7 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import theme from "../theme";
-import { deleteAuthInfo } from "../backend/AuthStorage";
+import { getAuthInfo, deleteAuthInfo } from "../backend/AuthStorage";
 
 //Redux
 import { connect } from "react-redux";
@@ -60,22 +60,31 @@ const headerRight = (props, navigation, route) => {
       </TouchableOpacity>
     );
   } else {
+    {
+      console.log(props.checkAuth);
+    }
     return (
-      <TouchableOpacity onPress={() => navigation.navigate("Vacancies")}>
-        <MaterialCommunityIcons
-          name={"account-multiple-plus"}
-          size={30}
-          color={theme.COLORS.PRIMARY}
-          style={{ marginRight: 15 }}
-        />
-      </TouchableOpacity>
+      <>
+      {console.log(props.checkAuth[0].role)}
+        {props.checkAuth[0].role != "fan" ? (
+          <TouchableOpacity onPress={() => navigation.navigate("Vacancies")}>
+            <MaterialCommunityIcons
+              name={"account-multiple-plus"}
+              size={30}
+              color={theme.COLORS.PRIMARY}
+              style={{ marginRight: 15 }}
+            />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+      </>
     );
   }
 };
 
 const tabStackOptions = (props, navigation, route) => {
   return {
-    headerBackTitleVisible: false,
     headerTitle: () => {
       return (
         <View style={{ flexDirection: "row" }}>
@@ -88,7 +97,6 @@ const tabStackOptions = (props, navigation, route) => {
       );
     },
     headerRight: () => headerRight(props, navigation, route),
-    
   };
 };
 
@@ -99,7 +107,10 @@ function App(props) {
       <Stack.Navigator
         headerMode={props.checkAuth.length > 0 ? "float" : "none"}
         mode="modal"
-        screenOptions={{ headerTintColor: theme.COLORS.PRIMARY }}
+        screenOptions={{
+          headerBackTitleVisible: false,
+          headerTintColor: theme.COLORS.PRIMARY,
+        }}
       >
         {props.checkAuth.length > 0 ? (
           <>
@@ -129,12 +140,13 @@ function App(props) {
             <Stack.Screen
               name="NewVacancy"
               component={NewVacancyScreen}
-              options={{...theme.HORIZONTAL_ANIMATION, title:"New Vacancy"}}/>
+              options={{ ...theme.HORIZONTAL_ANIMATION, title: "New Vacancy" }}
+            />
             <Stack.Screen
               name="Applications"
               component={ApplicationsScreen}
-              options={{...theme.HORIZONTAL_ANIMATION, title:"Applications"}}
-          />
+              options={{ ...theme.HORIZONTAL_ANIMATION, title: "Applications" }}
+            />
           </>
         ) : (
           <>

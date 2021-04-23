@@ -47,6 +47,7 @@ export default ({ navigation })=>{
                 </>
                 :<></>
             }
+            
             { loading 
             ? <ActivityIndicator color={theme.COLORS.PRIMARY} size={"large"} />
             : <EventList items={events} navigation={navigation} />

@@ -238,6 +238,7 @@ export default ({ navigation }) => {
             onChangeText={(text) => setTitle(text)}
             style={styles.inputText}
             placeholder={"Title"}
+            autoFocus={true}
           />
           <View style={styles.row}>
             <View style={styles.dateContainer}>
@@ -290,7 +291,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   dateContainer: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
     width: "49%",
@@ -336,10 +337,5 @@ const styles = StyleSheet.create({
   image: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: "cover",
-    //...StyleSheet.absoluteFillObject,
-    //resizeMode: "",
-    // width: 100,
-    // height: 100,
-    // backgroundColor: 'red',
   },
 });

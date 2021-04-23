@@ -86,13 +86,11 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: theme.COLORS.WHITE,
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
+    padding: 5
+
   },
   container: {
-    alignItems: "center",
-    justifyContent: "flex-start",
-    height: height - 190,
+
   },
 
 });

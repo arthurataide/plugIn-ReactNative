@@ -5,6 +5,8 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  Text,
 } from "react-native";
 import theme from "../../../theme";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -17,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { postData } from "../../../backend/FetchData";
 import * as Toast from "../../../components/Toast";
 import { getAuthInfo } from "../../../backend/AuthStorage";
+import Moment from "moment";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,14 +31,28 @@ export default ({ navigation }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeSlide, setActiveSlide] = useState();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
   const ref = useRef(null);
 
-  // useEffect(()=>{
-  //   getAuthInfo().then((user)=>console.log(user._id))
-  // },[])
+
+  useEffect(()=>{
+    setShowDatePicker(Platform.OS === 'ios')
+    setShowTimePicker(Platform.OS === 'ios')
+
+    setIsAndroid(Platform.OS === 'android')
+  },[])
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
+    
+    if (isAndroid){
+      if (showDatePicker) setShowDatePicker(false)
+      if (showTimePicker) setShowTimePicker(false)
+    }
+
+    console.log(selectedDate)
     setDate(currentDate);
   };
 
@@ -205,6 +222,7 @@ export default ({ navigation }) => {
 
   return (
     <View style={styles.mainContainer}>
+      <ScrollView showsVerticalScrollIndicator = {false}>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.mainContainer}
         resetScrollToCoords={{ x: 0, y: 0 }}
@@ -242,21 +260,42 @@ export default ({ navigation }) => {
           />
           <View style={styles.row}>
             <View style={styles.dateContainer}>
-              <DateTimePicker
+              {showDatePicker && (
+                <DateTimePicker
                 testID="dateTimePicker"
                 value={date}
                 mode={"date"}
-                onChange={() => onChange()}
+                onChange={(event, date) => onChange(event, date)}
               />
+              )}
+
+              {isAndroid && (
+                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                  <Text style={styles.androidDatePicker} >{Moment(date).format("MMM D, YYYY")}</Text>
+                </TouchableOpacity>
+                
+              )}
+              
             </View>
+
             <View style={styles.dateContainer}>
-              <DateTimePicker
-                testID="dateTimePicker2"
-                value={date}
-                mode={"time"}
-                is24Hour={true}
-                onChange={() => onChange}
+            {showTimePicker && (
+                <DateTimePicker
+                  testID="dateTimePicker2"
+                  value={date}
+                  mode={"time"}
+                  is24Hour={true}
+                  onChange={(event, date) => onChange(event, date)}
               />
+              )}
+
+              {isAndroid && (
+                <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+                  <Text style={styles.androidDatePicker} >{Moment(date).format("h:mm A")}</Text>
+                </TouchableOpacity>
+                
+              )}
+              
             </View>
           </View>
           <FormInput
@@ -280,6 +319,7 @@ export default ({ navigation }) => {
           />
         </View>
       </KeyboardAwareScrollView>
+      </ScrollView>
     </View>
   );
 };
@@ -295,7 +335,7 @@ const styles = StyleSheet.create({
     borderColor: theme.COLORS.LIGHTGRAY,
     borderRadius: 10,
     width: "49%",
-    padding: 10,
+    padding: 15,
     marginVertical: 2,
   },
   row: {
@@ -338,4 +378,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     resizeMode: "cover",
   },
+  androidDatePicker:{
+    backgroundColor:"#efeff0", 
+    color:"#0285ff", 
+    margin:2, 
+    alignSelf:'flex-start'
+  
+  }
 });

@@ -33,41 +33,41 @@ Plug In is a cross-platform App built in React Native. The app is a social media
 
 **Registration**
 
-![](/assets/readmeImages/register1.png) ![](/assets/readmeImages/register2.png) ![](/assets/readmeImages/register3.png) 
+<img src="/assets/readmeImages/register1.PNG" width="300" height="550"> <img src="/assets/readmeImages/register2.PNG" width="300" height="550"> <img src="/assets/readmeImages/register3.PNG" width="300" height="550">
 
 **Loading**
 
-![](/assets/readmeImages/loading.png)
+<img src="/assets/readmeImages/loading.PNG" width="300" height="550">
 
 **Home**
 
-![](/assets/readmeImages/home1.png) ![](/assets/readmeImages/home2.png)
+<img src="/assets/readmeImages/home1.PNG" width="300" height="550"> <img src="/assets/readmeImages/home2.PNG" width="300" height="550">
 
 **Post Comment**
 
-![](/assets/readmeImages/comments1.png) ![](/assets/readmeImages/comments2.png)
+<img src="/assets/readmeImages/comments1.PNG" width="300" height="550"> <img src="/assets/readmeImages/comments2.PNG" width="300" height="550">
 
 **User Profile**
 
-![](/assets/readmeImages/userprofile.png)
+<img src="/assets/readmeImages/userprofile.PNG" width="300" height="550"> 
 
 **Search**
 
-![](/assets/readmeImages/Search1.png)
+<img src="/assets/readmeImages/Search1.PNG" width="300" height="550">
 
 **New Post**
 
-![](/assets/readmeImages/newPost.png) ![](/assets/readmeImages/newPost1.png)
+<img src="/assets/readmeImages/newPost.PNG" width="300" height="550"> <img src="/assets/readmeImages/newPost1.PNG" width="300" height="550">
 
 **Events**
 
-![](/assets/readmeImages/events.png) ![](/assets/readmeImages/events2.png)
+<img src="/assets/readmeImages/events.PNG" width="300" height="550"> <img src="/assets/readmeImages/events2.PNG" width="300" height="550">
 
 **My Profile**
 
-![](/assets/readmeImages/profile.png)
+<img src="/assets/readmeImages/profile.PNG" width="300" height="550">
 
 **Vacancies**
 
-![](/assets/readmeImages/Vacancies.png)
+<img src="/assets/readmeImages/Vacancies.PNG" width="300" height="550">
 

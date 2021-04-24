@@ -29,45 +29,45 @@ Plug In is a cross-platform App built in React Native. The app is a social media
 ## Screenshots - Plug IN
 **Login**
  
-<img src="/assets/readmeImages/login1.PNG" width="300" height="550">
+<img src="/assets/readmeImages/login1.PNG" width="250" height="550">
 
 **Registration**
 
-<img src="/assets/readmeImages/register1.PNG" width="300" height="550"> <img src="/assets/readmeImages/register2.PNG" width="300" height="550"> <img src="/assets/readmeImages/register3.PNG" width="300" height="550">
+<img src="/assets/readmeImages/register1.PNG" width="250" height="550"> <img src="/assets/readmeImages/register2.PNG" width="250" height="550"> <img src="/assets/readmeImages/register3.PNG" width="250" height="550">
 
 **Loading**
 
-<img src="/assets/readmeImages/loading.PNG" width="300" height="550">
+<img src="/assets/readmeImages/loading.PNG" width="250" height="550">
 
 **Home**
 
-<img src="/assets/readmeImages/home1.PNG" width="300" height="550"> <img src="/assets/readmeImages/home2.PNG" width="300" height="550">
+<img src="/assets/readmeImages/home1.PNG" width="250" height="550"> <img src="/assets/readmeImages/home2.PNG" width="250" height="550">
 
 **Post Comment**
 
-<img src="/assets/readmeImages/comments1.PNG" width="300" height="550"> <img src="/assets/readmeImages/comments2.PNG" width="300" height="550">
+<img src="/assets/readmeImages/comments1.PNG" width="250" height="550"> <img src="/assets/readmeImages/comments2.PNG" width="250" height="550">
 
 **User Profile**
 
-<img src="/assets/readmeImages/userprofile.PNG" width="300" height="550"> 
+<img src="/assets/readmeImages/userprofile.PNG" width="250" height="550"> 
 
 **Search**
 
-<img src="/assets/readmeImages/Search1.PNG" width="300" height="550">
+<img src="/assets/readmeImages/Search1.PNG" width="250" height="550">
 
 **New Post**
 
-<img src="/assets/readmeImages/newPost.PNG" width="300" height="550"> <img src="/assets/readmeImages/newPost1.PNG" width="300" height="550">
+<img src="/assets/readmeImages/newPost.PNG" width="250" height="550"> <img src="/assets/readmeImages/newPost1.PNG" width="250" height="550">
 
 **Events**
 
-<img src="/assets/readmeImages/events.PNG" width="300" height="550"> <img src="/assets/readmeImages/events2.PNG" width="300" height="550">
+<img src="/assets/readmeImages/events.PNG" width="250" height="550"> <img src="/assets/readmeImages/events2.PNG" width="250" height="550">
 
 **My Profile**
 
-<img src="/assets/readmeImages/profile.PNG" width="300" height="550">
+<img src="/assets/readmeImages/profile.PNG" width="250" height="550">
 
 **Vacancies**
 
-<img src="/assets/readmeImages/Vacancies.PNG" width="300" height="550">
+<img src="/assets/readmeImages/Vacancies.PNG" width="250" height="550">
 

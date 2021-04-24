@@ -20,6 +20,7 @@ import { updateData, postData, getData } from "../../backend/FetchData";
 import { BarIndicator } from "react-native-indicators";
 import Input from "../../components/Input";
 import theme from "../../theme";
+import * as Toast from "../../components/Toast"
 
 //Redux
 import { connect } from "react-redux";
@@ -264,6 +265,7 @@ function App(props) {
           return;
         }
         if (response.status === 200) {
+          Toast.show("You Profile was updated succesfully !")
           setLoadingSave(false);
         }
       }
@@ -297,7 +299,7 @@ function App(props) {
           }
           showsVerticalScrollIndicator={false}
         >
-          <StatusBar style="dark-content" />
+          
           <View style={styles.titleContainer}>
             <View style={styles.img}>
               <Image

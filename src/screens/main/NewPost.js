@@ -187,7 +187,6 @@ export default ({ navigation }) => {
   const renderItem = useCallback(
     ({ item, index }, parallaxProps) => (
       <View style={styles.card} key={index}>
-        {console.log(item.url)}
         <ParallaxImage
           source={{ uri: item.url }}
           containerStyle={styles.imageContainer}

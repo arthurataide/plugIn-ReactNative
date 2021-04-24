@@ -22,6 +22,13 @@ export default (props) => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    props.navigation.addListener('focus', () => {
+      console.log("Focus - Search")
+      loadData()
+    })
+  }, []);
+
   const loadData = () => {
     setLoading(true);
     getData("/auth/user-info").then((x) => {

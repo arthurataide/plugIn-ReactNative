@@ -28,8 +28,8 @@ Plug In is a cross-platform App built in React Native. The app is a social media
 
 ## Screenshots - Plug IN
 **Login**
-
-![](/assets/readmeImages/login1.PNG) 
+ 
+<img src="/assets/readmeImages/login1.PNG" width="400" height="550">
 
 **Registration**
 

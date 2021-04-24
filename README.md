@@ -21,7 +21,7 @@ Plug In is a cross-platform App built in React Native. The app is a social media
 * **Android**
 
 ## Built With
-* **Database:** API(Vercel, MongoDB, Node.js, Express) - [a link](https://github.com/jsmr04/PlugIn-Backend)
+* **Database:** API(Vercel, MongoDB, Node.js, Express) - [API Backend Repository](https://github.com/jsmr04/PlugIn-Backend)
 * **Storage:** Cloudinary
 * **Authentication:** MongoDB
 * **Navigation:** Stack Navigation and Tabs Navigation
